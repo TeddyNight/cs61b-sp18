@@ -264,21 +264,18 @@ public class IntList {
             return null;
         }
         IntList head = A;
-        IntList tail = A.rest;
-        IntList ptr = A.rest;
-        // set head pointer
-        A.rest = null;
-        while(ptr.rest != null) {
+        // Need more space, but maybe clearer?
+        IntList ptr = new IntList(A.first,A.rest);
+        // Initialize head
+        head.rest = null;
+        while(ptr != null) {
             IntList next = ptr.rest;
             ptr.rest = head.rest;
             head.rest = ptr;
             ptr = next;
         }
-        int t = head.first;
-        head.first = ptr.first;
-        // set the real new tail
-        ptr.first = t;
-        tail.rest = ptr;
+        head.first = head.rest.first;
+        head.rest = head.rest.rest;
 
         return A;
     }
