@@ -82,7 +82,7 @@ public class LinkedListDeque<T> {
         if(count==0){
             return ptr.data;
         }
-        return getRecursiveHelper(ptr.next,count--);
+        return getRecursiveHelper(ptr.next,--count);
     }
     public T getRecursive(int index){
         return getRecursiveHelper(sentinel.next,index);
