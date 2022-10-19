@@ -14,7 +14,7 @@ public class LinkedListDeque<T> {
     private int size;
 
     public LinkedListDeque() {
-        sentinel = new Node<T>(null,null,null);
+        sentinel = new Node<T>(null, null, null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
         size = 0;
@@ -23,22 +23,22 @@ public class LinkedListDeque<T> {
         return size;
     }
     public boolean isEmpty() {
-        return sentinel.next==sentinel;
+        return sentinel.next == sentinel;
     }
     public void addFirst(T item) {
-        Node<T> newnode = new Node<T>(sentinel,item,sentinel.next);
+        Node<T> newnode = new Node<T>(sentinel, item, sentinel.next);
         sentinel.next.prev = newnode;
         sentinel.next = newnode;
         size++;
     }
     public void addLast(T item) {
-        Node<T> newnode = new Node<T>(sentinel.prev,item,sentinel);
+        Node<T> newnode = new Node<T>(sentinel.prev, item, sentinel);
         sentinel.prev.next = newnode;
         sentinel.prev = newnode;
         size++;
     }
     public T removeFirst() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         T data = sentinel.next.data;
@@ -48,7 +48,7 @@ public class LinkedListDeque<T> {
         return data;
     }
     public T removeLast() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         T data = sentinel.prev.data;
@@ -57,34 +57,34 @@ public class LinkedListDeque<T> {
         size--;
         return data;
     }
-    public T get(int index){
-        if(isEmpty()) {
+    public T get(int index) {
+        if (isEmpty()) {
             return null;
         }
-        Node<T> ptr=sentinel.next;
-        for(int i=0;i<index;i++){
+        Node<T> ptr = sentinel.next;
+        for (int i = 0; i < index; i++) {
             ptr = ptr.next;
         }
         return ptr.data;
     }
     public void printDeque() {
         Node<T> ptr = sentinel.next;
-        while(ptr!=sentinel) {
-            System.out.print(ptr.data+" ");
+        while (ptr != sentinel) {
+            System.out.print(ptr.data + " ");
             ptr = ptr.next;
         }
         System.out.println("");
     }
-    public T getRecursiveHelper(Node<T> ptr,int count){
-        if(ptr==sentinel||ptr==null) {
+    private T getRecursiveHelper(Node<T> ptr, int count) {
+        if (ptr == sentinel || ptr == null) {
             return null;
         }
-        if(count==0){
+        if (count == 0) {
             return ptr.data;
         }
-        return getRecursiveHelper(ptr.next,--count);
+        return getRecursiveHelper(ptr.next, --count);
     }
-    public T getRecursive(int index){
-        return getRecursiveHelper(sentinel.next,index);
+    public T getRecursive(int index) {
+        return getRecursiveHelper(sentinel.next, index);
     }
 }

@@ -4,9 +4,9 @@ public class ArrayDeque<T> {
     /**
      * front 指向的是插入位置，rear指向最后一个数据，要确保这俩东西
      */
-    int front;
-    int rear;
-    public ArrayDeque(){
+    private int front;
+    private int rear;
+    public ArrayDeque() {
         front = 0; // items[front + 1]
         rear = 0;
         items = (T[]) new Object[8];
@@ -18,76 +18,76 @@ public class ArrayDeque<T> {
          *  最后式子应该化简为rear-front+items.length
          *  加items.length是当rear-front出现负数的情况
          */
-        return (items.length+(rear-(front+1))+1)%items.length;
+        return (items.length + (rear - (front + 1)) + 1) % items.length;
     }
-    public int length() {
+    private int length() {
         return items.length;
     }
     public boolean isEmpty() {
-        return size()==0;
+        return size() == 0;
     }
-    public boolean isFull() {
-        return size()==items.length-1;
+    private boolean isFull() {
+        return size() == items.length - 1;
     }
     private void resize(int newSize) {
         // Avoid the problems caused by resizing too small
-        if(newSize < 4) {
+        if (newSize < 4) {
             return;
         }
         int oldSize = size();
         T[] newitems = (T[]) new Object[newSize];
-        for(int i=0;i<oldSize;i++) {
-            newitems[i+1] = get(i);
+        for (int i = 0; i < oldSize; i++) {
+            newitems[i + 1] = get(i);
         }
         items = newitems;
         front = 0;
         rear = oldSize;
     }
     public void addFirst(T item) {
-        if(isFull()){
-            resize((int)(items.length * REFACTOR));
+        if (isFull()) {
+            resize((int) (items.length * REFACTOR));
         }
         items[front] = item;
-        front = (items.length+front-1) % items.length;
+        front = (items.length + front - 1) % items.length;
     }
     public void addLast(T item) {
-        if(isFull()){
-            resize((int)(items.length * REFACTOR));
+        if (isFull()) {
+            resize((int) (items.length * REFACTOR));
         }
-        rear = (rear+1)%items.length;
+        rear = (rear + 1) % items.length;
         items[rear] = item;
     }
     public T removeFirst() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
-        if((float)size() / (float)items.length < 0.25f){
-            resize(items.length/2);
+        if ((float) size() / (float) items.length < 0.25f) {
+            resize(items.length / 2);
         }
-        front = (front+1) % items.length;
+        front = (front + 1) % items.length;
         return items[front];
     }
     public T removeLast() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return null;
         }
         T data = items[rear];
-        rear = (items.length+rear-1) % items.length;
-        if((float)size() / (float)items.length < 0.25f){
-            resize(items.length/2);
+        rear = (items.length + rear - 1) % items.length;
+        if ((float) size() / (float) items.length < 0.25f) {
+            resize(items.length / 2);
         }
         return data;
     }
-    public T get(int index){
-        if(isEmpty() || index > size()-1) {
+    public T get(int index) {
+        if (isEmpty() || index > size() - 1) {
             return null;
         }
-        index = (front+1+index) % items.length;
+        index = (front + 1 + index) % items.length;
         return items[index];
     }
-    public void printDeque(){
-        for(int i=0;i<size();i++) {
-            System.out.print(get(i)+" ");
+    public void printDeque() {
+        for (int i = 0; i < size(); i++) {
+            System.out.print(get(i) + " ");
         }
         System.out.println("");
     }
