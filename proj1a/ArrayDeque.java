@@ -30,6 +30,10 @@ public class ArrayDeque<T> {
         return size()==items.length-1;
     }
     private void resize(int newSize) {
+        // Avoid the problems caused by resizing too small
+        if(newSize < 4) {
+            return;
+        }
         int oldSize = size();
         T[] newitems = (T[]) new Object[newSize];
         for(int i=0;i<oldSize;i++) {
