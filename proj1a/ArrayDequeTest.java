@@ -1,5 +1,6 @@
 /** Performs some basic linked list tests. */
-public class LinkedListDequeTest {
+public class ArrayDequeTest {
+	
 	/* Utility method for printing out empty checks. */
 	public static boolean checkEmpty(boolean expected, boolean actual) {
 		if (expected != actual) {
@@ -29,7 +30,7 @@ public class LinkedListDequeTest {
 	}
 
 	public static boolean checkValue(Integer expected, Integer actual) {
-		if(expected != actual) {
+		if (expected != actual) {
 			System.out.println("Expected: "+expected+" Acutal:"+actual);
 			return false;
 		}
@@ -37,27 +38,45 @@ public class LinkedListDequeTest {
 	}
 	public static void getTest() {
 		System.out.println("Running getTest..");
-		LinkedListDeque<Integer> lldq1 = new LinkedListDeque();
+		ArrayDeque<Integer> lldq1 = new ArrayDeque();
 		boolean passed = checkValue(null, lldq1.get(0));
 		lldq1.addFirst(0);
-		lldq1.addLast(1);
-		lldq1.addLast(2);
-		passed = checkValue(0, lldq1.get(0)) && passed;
-		passed = checkValue(1,lldq1.get(1)) && passed;
-		passed = checkValue(2, lldq1.get(2)) && passed;
+		lldq1.addFirst(1);
+		lldq1.addFirst(2);
+		lldq1.addFirst(3);
+		lldq1.addFirst(4);
+		lldq1.addFirst(5);
+		lldq1.addFirst(6);
+		lldq1.addFirst(7);
+		lldq1.addFirst(8);
+		passed = checkValue(8,lldq1.get(0)) && passed;
+		passed = checkValue(0, lldq1.get(8)) && passed;
+		passed = checkValue(null, lldq1.get(9)) && passed;
 		printTestStatus(passed);
 	}
-	public static void getRecursiveTest() {
-		System.out.println("Running getRecursiveTest..");
-		LinkedListDeque<Integer> lldq1 = new LinkedListDeque();
-		boolean passed = checkValue(null, lldq1.get(0));
+	public static void resizeTest() {
+		System.out.println("Running resizeTest..");
+/*
+		ArrayDeque<Integer> lldq1 = new ArrayDeque();
 		lldq1.addFirst(0);
-		lldq1.addLast(1);
-		lldq1.addLast(2);
-		passed = checkValue(0, lldq1.getRecursive(0)) && passed;
-		passed = checkValue(1,lldq1.getRecursive(1)) && passed;
-		passed = checkValue(2, lldq1.getRecursive(2)) && passed;
+		lldq1.addFirst(1);
+		lldq1.addFirst(2);
+		lldq1.addFirst(3);
+		lldq1.addFirst(4);
+		lldq1.addFirst(5);
+		lldq1.addFirst(6);
+		lldq1.addFirst(7);
+		lldq1.addFirst(8);
+		boolean passed = checkSize(14,lldq1.length());
+		lldq1.removeLast();
+		lldq1.removeLast();
+		lldq1.removeLast();
+		lldq1.removeLast();
+		lldq1.removeLast();
+		lldq1.removeLast();
+		passed = checkSize(7,lldq1.length()) && passed;
 		printTestStatus(passed);
+ */
 	}
 	/** Adds a few things to the list, checking isEmpty() and size() are correct, 
 	  * finally printing the results. 
@@ -67,7 +86,7 @@ public class LinkedListDequeTest {
 		System.out.println("Running add/isEmpty/Size test.");
 		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
-		LinkedListDeque<String> lld1 = new LinkedListDeque<String>();
+		ArrayDeque<String> lld1 = new ArrayDeque<String>();
 
 		boolean passed = checkEmpty(true, lld1.isEmpty());
 
@@ -98,7 +117,7 @@ public class LinkedListDequeTest {
 
 		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
-		LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+		ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
 		// should be empty 
 		boolean passed = checkEmpty(true, lld1.isEmpty());
 
@@ -107,10 +126,18 @@ public class LinkedListDequeTest {
 		passed = checkEmpty(false, lld1.isEmpty()) && passed;
 
 		lld1.removeFirst();
-		// should be empty 
+		// should be empty front为1，rear为0，虽然整个数组为0，但empty不true
 		passed = checkEmpty(true, lld1.isEmpty()) && passed;
 
-		printTestStatus(passed);
+		// Test added according to gradescope
+		lld1.addFirst(2);
+		lld1.removeLast();
+		lld1.addFirst(4);
+		lld1.removeLast();
+		lld1.addFirst(8);
+		lld1.removeLast();
+		lld1.addFirst(10);
+		passed = checkValue(10,lld1.removeLast()) && passed;
 
 	}
 
@@ -119,6 +146,6 @@ public class LinkedListDequeTest {
 		addIsEmptySizeTest();
 		addRemoveTest();
 		getTest();
-		getRecursiveTest();
+		resizeTest();
 	}
-}
+} 
