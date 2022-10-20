@@ -29,9 +29,10 @@ public class TestPalindrome {
     @Test
     public void testisPalindromeOffByOne() {
         CharacterComparator cc = new OffByOne();
-        assertTrue(palindrome.isPalindrome("",cc));
-        assertTrue(palindrome.isPalindrome("a",cc));
-        assertFalse(palindrome.isPalindrome("abc",cc));
-        assertTrue(palindrome.isPalindrome("flake",cc));
+        assertTrue(palindrome.isPalindrome("", cc));
+        assertTrue(palindrome.isPalindrome("a", cc));
+        assertFalse(palindrome.isPalindrome("abc", cc));
+        assertTrue(palindrome.isPalindrome("flake", cc));
+        assertTrue(palindrome.isPalindrome("flake", cc));
     }
 }
