@@ -1,4 +1,4 @@
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T> {
     private T[] items;
     private final float REFACTOR = 1.75f;
     /**
@@ -11,6 +11,7 @@ public class ArrayDeque<T> {
         rear = 0;
         items = (T[]) new Object[8];
     }
+    @Override
     public int size() {
         /** 数组下标从0到items.length-1
          *  我这里采用头指针前置的做法
@@ -23,6 +24,7 @@ public class ArrayDeque<T> {
     private int length() {
         return items.length;
     }
+    @Override
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -43,6 +45,7 @@ public class ArrayDeque<T> {
         front = 0;
         rear = oldSize;
     }
+    @Override
     public void addFirst(T item) {
         if (isFull()) {
             resize((int) (items.length * REFACTOR));
@@ -50,6 +53,7 @@ public class ArrayDeque<T> {
         items[front] = item;
         front = (items.length + front - 1) % items.length;
     }
+    @Override
     public void addLast(T item) {
         if (isFull()) {
             resize((int) (items.length * REFACTOR));
@@ -57,6 +61,7 @@ public class ArrayDeque<T> {
         rear = (rear + 1) % items.length;
         items[rear] = item;
     }
+    @Override
     public T removeFirst() {
         if (isEmpty()) {
             return null;
@@ -67,6 +72,7 @@ public class ArrayDeque<T> {
         front = (front + 1) % items.length;
         return items[front];
     }
+    @Override
     public T removeLast() {
         if (isEmpty()) {
             return null;
@@ -78,6 +84,7 @@ public class ArrayDeque<T> {
         }
         return data;
     }
+    @Override
     public T get(int index) {
         if (isEmpty() || index > size() - 1) {
             return null;
@@ -85,6 +92,7 @@ public class ArrayDeque<T> {
         index = (front + 1 + index) % items.length;
         return items[index];
     }
+    @Override
     public void printDeque() {
         for (int i = 0; i < size(); i++) {
             System.out.print(get(i) + " ");
