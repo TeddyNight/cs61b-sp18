@@ -1,6 +1,10 @@
 package synthesizer;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.util.Iterator;
+
+import static org.junit.Assert.assertEquals;
 
 /** Tests the ArrayRingBuffer class.
  *  @author Josh Hug
@@ -8,8 +12,78 @@ import static org.junit.Assert.*;
 
 public class TestArrayRingBuffer {
     @Test
-    public void someTest() {
-        //ArrayRingBuffer arb = new ArrayRingBuffer(10);
+    public void basicTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        int[] test = {1,2,3,4,5,6,7,8,9,10};
+        for (int i = 0; i < 10; i++) {
+            arb.enqueue(test[i]);
+        }
+        assertEquals(10,arb.fillCount());
+        assertEquals(true,arb.isFull());
+        assertEquals(false,arb.isEmpty());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(test[i],arb.dequeue());
+        }
+        assertEquals(0,arb.fillCount());
+        assertEquals(true,arb.isEmpty());
+        assertEquals(false,arb.isFull());
+    }
+
+    @Test
+    public void peekTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        arb.enqueue(1);
+        assertEquals(1,arb.peek());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void emptyDequeTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        arb.dequeue();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void emptyPeekTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        arb.peek();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void fullTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        int[] test = {1,2,3,4,5,6,7,8,9,10};
+        for (int i = 0; i < 10; i++) {
+            arb.enqueue(test[i]);
+        }
+        arb.enqueue(11);
+    }
+
+    @Test
+    public void ringTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(3);
+        arb.enqueue(1);
+        arb.dequeue();
+        arb.enqueue(1);
+        arb.dequeue();
+        arb.enqueue(1);
+        arb.dequeue();
+        arb.enqueue(1);
+        assertEquals(1,arb.dequeue());
+    }
+
+    @Test
+    public void iteratorTest() {
+        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        int[] test = {1,2,3,4,5,6,7,8,9,10};
+        for (int i = 0; i < 10; i++) {
+            arb.enqueue(test[i]);
+        }
+        int j = 0;
+        Iterator<Integer> iter = arb.iterator();
+        while (iter.hasNext()) {
+            assertEquals((Integer) test[j], iter.next());
+            j = j + 1;
+        }
     }
 
     /** Calls tests for ArrayRingBuffer. */
