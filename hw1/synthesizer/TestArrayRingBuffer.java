@@ -73,15 +73,14 @@ public class TestArrayRingBuffer {
 
     @Test
     public void iteratorTest() {
-        ArrayRingBuffer arb = new ArrayRingBuffer<Integer>(10);
+        ArrayRingBuffer<Integer> arb = new ArrayRingBuffer(10);
         int[] test = {1,2,3,4,5,6,7,8,9,10};
         for (int i = 0; i < 10; i++) {
             arb.enqueue(test[i]);
         }
         int j = 0;
-        Iterator<Integer> iter = arb.iterator();
-        while (iter.hasNext()) {
-            assertEquals((Integer) test[j], iter.next());
+        for (Integer x: arb) {
+            assertEquals((Integer) test[j], x);
             j = j + 1;
         }
     }
