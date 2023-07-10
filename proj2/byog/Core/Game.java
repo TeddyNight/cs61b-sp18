@@ -3,11 +3,17 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    public MapGenerator mg;
+
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -28,11 +34,35 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        // TODO: Fill out this method to run the game using the input passed in,
-        // and return a 2D tile representation of the world that would have been
-        // drawn if the same inputs had been given to playWithKeyboard().
-
         TETile[][] finalWorldFrame = null;
+        int i = 1;
+        switch (input.charAt(0)) {
+            case 'n':
+                char[] chars = input.toCharArray();
+                long seed = 0;
+                for (; chars[i] >= '0' && chars[i] <= '9'; i++) {
+                    seed = seed * 10 + (chars[i] - '0');
+                }
+                mg = new MapGenerator(seed, WIDTH, HEIGHT);
+                finalWorldFrame = mg.getMap();
+                Player player = mg.getPlayer();
+                player.moveWithString(input.substring(i));
+                break;
+            case 'l':
+                try {
+                    FileInputStream fileIn = new FileInputStream("Game.ser");
+                    ObjectInputStream in = new ObjectInputStream(fileIn);
+                    mg = (MapGenerator) in.readObject();
+                    in.close();
+                    fileIn.close();
+                    player = mg.getPlayer();
+                    player.moveWithString(input.substring(i));
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
         return finalWorldFrame;
     }
 }
