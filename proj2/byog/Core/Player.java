@@ -31,8 +31,12 @@ public class Player implements Serializable {
         return map[newP.getX()][newP.getY()] == Tileset.WALL;
     }
 
+    private boolean isVaildPos(Position newP) {
+        return (newP.getY() >= height) || (newP.getX() >= width);
+    }
+
     public void move(Position newP) {
-        if (isCollision(newP)) {
+        if (isVaildPos(newP) || isCollision(newP)) {
             return;
         }
         clear();
