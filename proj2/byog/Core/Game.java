@@ -43,39 +43,54 @@ public class Game {
             case 'n':
                 char[] chars = input.toCharArray();
                 long seed = 0;
-                for (; chars[i] >= '0' && chars[i] <= '9'; i++) {
+                for (; i < input.length() && chars[i] >= '0' && chars[i] <= '9'; i++) {
                     seed = seed * 10 + (chars[i] - '0');
                 }
                 mg = new MapGenerator(seed, WIDTH, HEIGHT);
                 finalWorldFrame = mg.getMap();
                 Player player = mg.getPlayer();
-                player.moveWithString(input.substring(i));
+                if (i < input.length()) {
+                    player.moveWithString(input.substring(i));
+                }
                 break;
             case 'l':
-                try {
-                    FileInputStream fileIn = new FileInputStream("./Game.ser");
-                    ObjectInputStream in = new ObjectInputStream(fileIn);
-                    mg = (MapGenerator) in.readObject();
-                    in.close();
-                    fileIn.close();
+                mg = loadWorld();
+                if (mg != null) {
                     finalWorldFrame = mg.getMap();
                     player = mg.getPlayer();
-                    player.moveWithString(input.substring(i));
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    if (i < input.length()) {
+                        player.moveWithString(input.substring(i));
+                    }
                 }
                 break;
             default:
                 break;
         }
 
+        return finalWorldFrame;
+    }
+
+    private void saveWorld(MapGenerator world) {
         try {
             FileOutputStream fileOut = new FileOutputStream("./Game.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(mg);
+            out.writeObject(world);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return finalWorldFrame;
+    }
+
+    private MapGenerator loadWorld() {
+        MapGenerator mg = null;
+        try {
+            FileInputStream fileIn = new FileInputStream("./Game.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            mg = (MapGenerator) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return mg;
     }
 }
