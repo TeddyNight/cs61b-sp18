@@ -32,11 +32,12 @@ public class Player implements Serializable {
     }
 
     private boolean isVaildPos(Position newP) {
-        return (newP.getY() >= height) || (newP.getX() >= width);
+        return (newP.getY() < height) && (newP.getX() < width)
+                && (newP.getX() >= 0) && (newP.getY() >= 0);
     }
 
     public void move(Position newP) {
-        if (isVaildPos(newP) || isCollision(newP)) {
+        if (!isVaildPos(newP) || isCollision(newP)) {
             return;
         }
         clear();
