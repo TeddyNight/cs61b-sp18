@@ -35,7 +35,7 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        String dir = this.getClass().getResource("/").getFile();
+//        String dir = this.getClass().getResource("/").getFile();
         TETile[][] finalWorldFrame = null;
         MapGenerator mg = null;
         int i = 1;
@@ -53,7 +53,7 @@ public class Game {
                 break;
             case 'l':
                 try {
-                    FileInputStream fileIn = new FileInputStream(dir + "Game.ser");
+                    FileInputStream fileIn = new FileInputStream("./Game.ser");
                     ObjectInputStream in = new ObjectInputStream(fileIn);
                     mg = (MapGenerator) in.readObject();
                     in.close();
@@ -68,9 +68,9 @@ public class Game {
             default:
                 break;
         }
-        // TODO do saving works
+
         try {
-            FileOutputStream fileOut = new FileOutputStream(dir + "Game.ser");
+            FileOutputStream fileOut = new FileOutputStream("./Game.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(mg);
         } catch (IOException e) {

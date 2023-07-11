@@ -54,6 +54,8 @@ public class Player implements Serializable {
             case 's':
                 move(new Position(pos.getX(), pos.getY() - 1));
                 break;
+            default:
+                break;
         }
     }
 
