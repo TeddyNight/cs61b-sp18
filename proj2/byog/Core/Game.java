@@ -66,13 +66,13 @@ public class Game {
             default:
                 break;
         }
-//        saveWorld(mg);
+        saveWorld(mg);
         return finalWorldFrame;
     }
 
     private void saveWorld(MapGenerator world) {
         try {
-            FileOutputStream fileOut = new FileOutputStream("./Game.ser");
+            FileOutputStream fileOut = new FileOutputStream("./Game.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(world);
         } catch (IOException e) {
@@ -83,7 +83,7 @@ public class Game {
     private MapGenerator loadWorld() {
         MapGenerator mg = null;
         try {
-            FileInputStream fileIn = new FileInputStream("./Game.ser");
+            FileInputStream fileIn = new FileInputStream("./Game.txt");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             mg = (MapGenerator) in.readObject();
             in.close();
