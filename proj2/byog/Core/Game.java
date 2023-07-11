@@ -20,6 +20,23 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        welcomeFrame();
+        char choice = typeChoice();
+        switch (choice) {
+            case 'n':
+                break;
+            case 'l':
+                break;
+            default:
+                break;
+        }
+    }
+
+    private char typeChoice() {
+        return 'n';
+    }
+
+    private void welcomeFrame() {
     }
 
     /**
@@ -35,7 +52,6 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-//        String dir = this.getClass().getResource("/").getFile();
         TETile[][] finalWorldFrame = null;
         MapGenerator mg = null;
         int i = 1;

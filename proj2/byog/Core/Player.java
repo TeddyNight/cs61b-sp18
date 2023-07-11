@@ -28,16 +28,19 @@ public class Player implements Serializable {
     }
 
     private boolean isCollision(Position newP) {
-        return map[newP.getX()][newP.getY()] == Tileset.WALL;
+        /** use "==" will compare base on their address cause problems
+         *  because every time the WALL's address is different
+         */
+        return map[newP.getX()][newP.getY()].equals(Tileset.WALL);
     }
 
-    private boolean isVaildPos(Position newP) {
+    private boolean isValidPos(Position newP) {
         return (newP.getY() < height) && (newP.getX() < width)
                 && (newP.getX() >= 0) && (newP.getY() >= 0);
     }
 
     public void move(Position newP) {
-        if (!isVaildPos(newP) || isCollision(newP)) {
+        if (!isValidPos(newP) || isCollision(newP)) {
             return;
         }
         clear();
