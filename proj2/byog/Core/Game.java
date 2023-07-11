@@ -3,7 +3,11 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -31,6 +35,7 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
+        String dir = this.getClass().getResource("/").getFile();
         TETile[][] finalWorldFrame = null;
         MapGenerator mg = null;
         int i = 1;
@@ -48,21 +53,24 @@ public class Game {
                 break;
             case 'l':
                 try {
-                    FileInputStream fileIn = new FileInputStream("Game.ser");
+                    FileInputStream fileIn = new FileInputStream(dir + "Game.ser");
                     ObjectInputStream in = new ObjectInputStream(fileIn);
                     mg = (MapGenerator) in.readObject();
                     in.close();
                     fileIn.close();
+                    finalWorldFrame = mg.getMap();
                     player = mg.getPlayer();
                     player.moveWithString(input.substring(i));
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 break;
+            default:
+                break;
         }
         // TODO do saving works
         try {
-            FileOutputStream fileOut = new FileOutputStream("Game.ser");
+            FileOutputStream fileOut = new FileOutputStream(dir + "Game.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(mg);
         } catch (IOException e) {
