@@ -3,16 +3,13 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    public MapGenerator mg;
 
 
     /**
@@ -35,6 +32,7 @@ public class Game {
      */
     public TETile[][] playWithInputString(String input) {
         TETile[][] finalWorldFrame = null;
+        MapGenerator mg = null;
         int i = 1;
         switch (input.charAt(0)) {
             case 'n':
@@ -62,7 +60,14 @@ public class Game {
                 }
                 break;
         }
-
+        // TODO do saving works
+        try {
+            FileOutputStream fileOut = new FileOutputStream("Game.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(mg);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return finalWorldFrame;
     }
 }

@@ -3,7 +3,9 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private Position pos;
     private int width;
     private int height;
