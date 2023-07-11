@@ -13,8 +13,8 @@ public class MapGenerator implements java.io.Serializable {
     private int width;
     private int height;
     private TETile[][] map;
-    private static Random r;
-    private static Player player = null;
+    private Random r;
+    private Player player = null;
 
     public MapGenerator(long seed, int width, int height) {
         this.width = width;

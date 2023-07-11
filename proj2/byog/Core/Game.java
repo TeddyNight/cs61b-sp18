@@ -66,7 +66,7 @@ public class Game {
             default:
                 break;
         }
-
+//        saveWorld(mg);
         return finalWorldFrame;
     }
 
