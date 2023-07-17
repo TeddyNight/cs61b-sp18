@@ -54,7 +54,7 @@ public class Player implements Serializable {
                 move(new Position(pos.getX() - 1, pos.getY()));
                 break;
             case 'd':
-                move(new Position(pos.getX() - 1, pos.getY()));
+                move(new Position(pos.getX() + 1, pos.getY()));
                 break;
             case 'w':
                 move(new Position(pos.getX(), pos.getY() + 1));

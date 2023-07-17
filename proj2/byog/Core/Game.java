@@ -2,7 +2,10 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,30 +16,104 @@ public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int HEIGHT = 50;
 
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        MapGenerator mg = null;
+        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
+        StdDraw.setXscale(0, WIDTH);
+        StdDraw.setYscale(0, HEIGHT);
+        StdDraw.clear(Color.BLACK);
         welcomeFrame();
         char choice = typeChoice();
-        switch (choice) {
-            case 'n':
-                break;
-            case 'l':
-                break;
-            default:
-                break;
+        while (mg == null) {
+            switch (choice) {
+                case 'n':
+                    seedFrame();
+                    long seed = typeSeed();
+                    mg = new MapGenerator(seed, WIDTH, HEIGHT);
+                    break;
+                case 'l':
+                    mg = loadWorld();
+                    break;
+                case 'q':
+                    return;
+                default:
+                    choice = typeChoice();
+            }
         }
+        TETile[][] finalWorldFrame = mg.getMap();
+        Player player = mg.getPlayer();
+        ter.initialize(WIDTH, HEIGHT);
+        ter.renderFrame(finalWorldFrame);
+        while (true) {
+            char in = typeChoice();
+            if (in == ':') {
+                continue;
+            }
+            if (in == 'q') {
+                break;
+            }
+            player.move(in);
+            ter.renderFrame(finalWorldFrame);
+        }
+        saveWorld(mg);
     }
 
     private char typeChoice() {
-        return 'n';
+        while (true) {
+            if (StdDraw.hasNextKeyTyped()) {
+                return StdDraw.nextKeyTyped();
+            }
+        }
+    }
+
+    private long typeSeed() {
+        long seed = 0;
+        char c = '\0';
+        do {
+            if (StdDraw.hasNextKeyTyped()) {
+                c = StdDraw.nextKeyTyped();
+                if (c >= '0' && c <= '9') {
+                    seed = (c - '0') + seed * 10;
+                }
+            }
+        } while (c != 's');
+        return seed;
     }
 
     private void welcomeFrame() {
+        final String[] opts = {"New Game (N)", "Load Game (L)", "Quit (Q)"};
+        Font font = new Font("Arial", Font.BOLD, 48);
+        StdDraw.clear(Color.black);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.setFont(font);
+        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "CS61B: THE GAME");
+        showOption(opts);
+        StdDraw.show();
+    }
+
+
+    private void showOption(String[] opts) {
+        Font font = new Font("Arial", Font.BOLD, 24);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.setFont(font);
+        for (int i = 0; i < opts.length; i++) {
+            StdDraw.text(WIDTH / 2, HEIGHT / 2 - i * 2, opts[i]);
+        }
+    }
+
+    private void seedFrame() {
+        Font font = new Font("Arial", Font.BOLD, 32);
+        StdDraw.clear(Color.black);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.setFont(font);
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "Input the seed, ends with S");
+        StdDraw.show();
     }
 
     /**
@@ -63,24 +140,19 @@ public class Game {
                     seed = seed * 10 + (chars[i] - '0');
                 }
                 mg = new MapGenerator(seed, WIDTH, HEIGHT);
-                finalWorldFrame = mg.getMap();
-                Player player = mg.getPlayer();
-                if (i < input.length()) {
-                    player.moveWithString(input.substring(i));
-                }
                 break;
             case 'l':
                 mg = loadWorld();
-                if (mg != null) {
-                    finalWorldFrame = mg.getMap();
-                    player = mg.getPlayer();
-                    if (i < input.length()) {
-                        player.moveWithString(input.substring(i));
-                    }
-                }
                 break;
             default:
-                break;
+                return null;
+        }
+        if (mg != null) {
+            finalWorldFrame = mg.getMap();
+            Player player = mg.getPlayer();
+            if (i < input.length()) {
+                player.moveWithString(input.substring(i));
+            }
         }
         saveWorld(mg);
         return finalWorldFrame;
