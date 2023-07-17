@@ -2,6 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Color;
@@ -35,7 +36,7 @@ public class Game {
                 case 'n':
                     seedFrame();
                     long seed = typeSeed();
-                    mg = new MapGenerator(seed, WIDTH, HEIGHT);
+                    mg = new MapGenerator(seed, WIDTH, HEIGHT - 2);
                     break;
                 case 'l':
                     mg = loadWorld();
@@ -50,18 +51,45 @@ public class Game {
         Player player = mg.getPlayer();
         ter.initialize(WIDTH, HEIGHT);
         ter.renderFrame(finalWorldFrame);
-        while (true) {
-            char in = typeChoice();
-            if (in == ':') {
-                continue;
-            }
-            if (in == 'q') {
-                break;
-            }
-            player.move(in);
-            ter.renderFrame(finalWorldFrame);
-        }
+        gameFrame(finalWorldFrame, player);
         saveWorld(mg);
+    }
+
+    private void gameFrame(TETile[][] finalWorldFrame, Player player) {
+        while (true) {
+            ter.renderFrame(finalWorldFrame);
+            renderHeadsup(finalWorldFrame);
+            if (StdDraw.hasNextKeyTyped()) {
+                char in = StdDraw.nextKeyTyped();
+                if (in == ':') {
+                    continue;
+                }
+                if (in == 'q') {
+                    break;
+                }
+                player.move(in);
+            }
+        }
+    }
+
+    private void renderHeadsup(TETile[][] finalWorldFrame) {
+        StdDraw.setPenColor(Color.white);
+        String msg = "Nothing";
+        int x = (int) StdDraw.mouseX();
+        int y = (int) StdDraw.mouseY();
+        if (y < HEIGHT - 2) {
+            TETile tetile = finalWorldFrame[x][y];
+            if (tetile.equals(Tileset.WALL)) {
+                msg = "Wall";
+            } else if (tetile.equals(Tileset.FLOOR)) {
+                msg = "Floor";
+            } else if (tetile.equals(Tileset.PLAYER)) {
+                msg = "Player";
+            }
+        }
+        StdDraw.textLeft(0, HEIGHT - 1, msg);
+        StdDraw.show();
+        StdDraw.pause(25);
     }
 
     private char typeChoice() {
@@ -139,7 +167,7 @@ public class Game {
                 for (; i < input.length() && chars[i] >= '0' && chars[i] <= '9'; i++) {
                     seed = seed * 10 + (chars[i] - '0');
                 }
-                mg = new MapGenerator(seed, WIDTH, HEIGHT);
+                mg = new MapGenerator(seed, WIDTH, HEIGHT - 2);
                 break;
             case 'l':
                 mg = loadWorld();
