@@ -27,7 +27,7 @@ public class Player implements Serializable {
         map[pos.getX()][pos.getY()] = Tileset.FLOOR;
     }
 
-    private boolean isCollision(Position newP) {
+    public boolean isCollision(Position newP) {
         /** use "==" will compare base on their address cause problems
          *  because every time the WALL's address is different
          */
@@ -71,6 +71,10 @@ public class Player implements Serializable {
         for (char c: inputs.toCharArray()) {
             move(c);
         }
+    }
+
+    public Position getPos() {
+        return pos;
     }
 
 }

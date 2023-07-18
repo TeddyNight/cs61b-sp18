@@ -12,12 +12,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 50;
+    public static final int HEADSUP_HEIGHT = 2;
 
 
     /**
@@ -36,7 +40,7 @@ public class Game {
                 case 'n':
                     seedFrame();
                     long seed = typeSeed();
-                    mg = new MapGenerator(seed, WIDTH, HEIGHT - 2);
+                    mg = new MapGenerator(seed, WIDTH, HEIGHT - HEADSUP_HEIGHT);
                     break;
                 case 'l':
                     mg = loadWorld();
@@ -55,10 +59,14 @@ public class Game {
         saveWorld(mg);
     }
 
+    private void renderGame(TETile[][] finalWorldFrame) {
+        ter.renderFrame(finalWorldFrame);
+        renderHeadsup(finalWorldFrame);
+    }
+
     private void gameFrame(TETile[][] finalWorldFrame, Player player) {
         while (true) {
-            ter.renderFrame(finalWorldFrame);
-            renderHeadsup(finalWorldFrame);
+            renderGame(finalWorldFrame);
             if (StdDraw.hasNextKeyTyped()) {
                 char in = StdDraw.nextKeyTyped();
                 if (in == ':') {
@@ -76,7 +84,35 @@ public class Game {
     }
 
     private void moveMouse(TETile[][] finalWorldFrame, Player player) {
+        // DFS search
+        int destX = (int) StdDraw.mouseX();
+        int destY = (int) StdDraw.mouseY() - HEADSUP_HEIGHT;
+        Position dest = new Position(destX, destY);
+        Stack<Position> poses = new Stack<>();
+        poses.push(player.getPos());
+        // it seems unnatural because it goes backward and skips over the floor
+        Set<Position> path = new HashSet<>();
+        while (!poses.isEmpty()) {
+            Position cur = poses.pop();
+            path.add(cur);
+            player.move(cur);
+            renderGame(finalWorldFrame);
+            StdDraw.pause(500);
 
+            if (cur.equals(dest)) {
+                break;
+            }
+
+            int x = cur.getX();
+            int y = cur.getY();
+            Position[] choices = {new Position(x - 1, y), new Position(x + 1, y),
+                                    new Position(x, y + 1), new Position(x, y - 1)};
+            for (Position choice: choices) {
+                if (!player.isCollision(choice) && !path.contains(choice)) {
+                    poses.push(choice);
+                }
+            }
+        }
     }
 
     private void renderHeadsup(TETile[][] finalWorldFrame) {
@@ -94,7 +130,7 @@ public class Game {
                 msg = "Player";
             }
         }
-        StdDraw.textLeft(0, HEIGHT - 1, msg);
+        StdDraw.textLeft(0, HEIGHT - HEADSUP_HEIGHT / 2, msg);
         StdDraw.show();
         StdDraw.pause(25);
     }
