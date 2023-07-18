@@ -21,7 +21,7 @@ public class Rectangle {
         }
     }
 
-    private void drawVertically(TETile[][] map) {
+    protected void drawVertically(TETile[][] map) {
         int min = leftDown.getY();
         int max = rightUp.getY();
         for (int i = min; i <= max; i++) {
@@ -30,7 +30,7 @@ public class Rectangle {
         }
     }
 
-    private void drawHorizontally(TETile[][] map) {
+    protected void drawHorizontally(TETile[][] map) {
         int min = leftDown.getX();
         int max = rightUp.getX();
         for (int i = min; i <= max; i++) {

@@ -48,13 +48,16 @@ public class MapGenerator implements java.io.Serializable {
          */
         List<Hallway> hallways = new ArrayList<>();
         Set<Room> connected = new HashSet<>();
-        for (Room room: rooms) {
-            if (connected.contains(room)) {
-                continue;
+        connected.add(rooms.get(0));
+        /**
+         * Assumption:
+         */
+        while (connected.size() != rooms.size()) {
+            for (Object o: connected.toArray()) {
+                Room room = (Room) o;
+                room.verticalHallway(rooms, hallways, connected, this.height);
+                room.horizontalHallway(rooms, hallways, connected, this.width);
             }
-            room.verticalHallways(rooms, hallways, connected, this.height);
-            connected.remove(room);
-            room.horizontalHallways(rooms, hallways, connected, this.width);
         }
         return hallways;
     }

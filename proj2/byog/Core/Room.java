@@ -15,52 +15,66 @@ public class Room extends Rectangle {
         this.rightUp = rightUp;
     }
 
-    public void verticalHallways(List<Room> rooms, List<Hallway> hallways,
+    private boolean isLeftNeighbor(Room room) {
+        return this.leftDown.getX() >= room.rightUp.getX();
+    }
+
+    private boolean isRightNeighbor(Room room) {
+        return this.rightUp.getX() <= room.rightUp.getX();
+    }
+
+    private boolean isUpNeighbor(Room room) {
+        return this.rightUp.getY() <= room.leftDown.getY();
+    }
+
+    private boolean isDownNeighbor(Room room) {
+        return this.leftDown.getY() >= room.rightUp.getY();
+    }
+
+    public void verticalHallway(List<Room> rooms, List<Hallway> hallways,
                                  Set<Room> connected, int height) {
-        for (int i = getLeftDown().getX() + 1; i < getRightUp().getX(); i += 2) {
+        for (int i = getLeftDown().getX(); i <= getRightUp().getX(); i += 2) {
             Hallway hallway = new Hallway(new Position(i, 0), height - 2, true);
-            boolean isConnected = false;
             for (Room room: rooms) {
-                if (!connected.contains(room) && hallway.overlaps(room)) {
-                    isConnected = true;
-//                    if (hallway.getRightUp().getY() == height - 1 ||
-//                    room.getRightUp().getY() > hallway.getRightUp().getY()) {
-//                        hallway.getRightUp().setY(room.getRightUp().getY());
-//                    }
-//                    else if (hallway.getLeftDown().getY() == 0 ||
-//                    room.getLeftDown().getY() < hallway.getLeftDown().getY()) {
-//                        hallway.getLeftDown().setY(room.getLeftDown().getY());
-//                    }
-                    connected.add(room);
+                if (room == this) {
+                    continue;
                 }
-            }
-            if (isConnected) {
-                hallways.add(hallway);
+                if (!connected.contains(room) && hallway.overlaps(room)) {
+                    connected.add(room);
+                    hallways.add(hallway);
+                    if (isUpNeighbor(room)) {
+                        hallway.leftDown.setY(this.rightUp.getY() - 1);
+                        hallway.rightUp.setY(room.leftDown.getY() + 1);
+                    } else if (isDownNeighbor(room)) {
+                        hallway.leftDown.setY(room.rightUp.getY() - 1);
+                        hallway.rightUp.setY(this.leftDown.getY() + 1);
+                    }
+                    return;
+                }
             }
         }
     }
 
-    public void horizontalHallways(List<Room> rooms,
+    public void horizontalHallway(List<Room> rooms,
                                    List<Hallway> hallways, Set<Room> connected, int width) {
-        for (int i = getLeftDown().getY() + 1; i < getRightUp().getY(); i += 2) {
+        for (int i = getLeftDown().getY(); i <= getRightUp().getY(); i += 2) {
             Hallway hallway = new Hallway(new Position(0, i), width - 2, false);
-            boolean isConnected = false;
             for (Room room: rooms) {
-                if (!connected.contains(room) && hallway.overlaps(room)) {
-                    isConnected = true;
-//                    if (hallway.getRightUp().getX() == width - 1 ||
-//                    room.getRightUp().getX() > hallway.getRightUp().getX()) {
-//                        hallway.getRightUp().setX(room.getRightUp().getX());
-//                    }
-//                    else if (hallway.getLeftDown().getX() == 0 ||
-//                    room.getLeftDown().getX() < hallway.getLeftDown().getX()) {
-//                        hallway.getLeftDown().setX(room.getLeftDown().getX());
-//                    }
-                    connected.add(room);
+                if (room == this) {
+                    continue;
                 }
-            }
-            if (isConnected) {
-                hallways.add(hallway);
+                if (!connected.contains(room) && hallway.overlaps(room)) {
+                    connected.add(room);
+                    hallways.add(hallway);
+                    if (isRightNeighbor(room)) {
+                        hallway.leftDown.setX(this.rightUp.getX() - 1);
+                        hallway.rightUp.setX(room.leftDown.getX() + 1);
+                    } else if (isLeftNeighbor(room)) {
+                        hallway.leftDown.setX(room.rightUp.getX() - 1);
+                        hallway.rightUp.setX(this.leftDown.getX() + 1);
+                    }
+                    return;
+                }
             }
         }
     }
