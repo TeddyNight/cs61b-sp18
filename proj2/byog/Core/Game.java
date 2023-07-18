@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -106,7 +107,7 @@ public class Game {
             int x = cur.getX();
             int y = cur.getY();
             Position[] choices = {new Position(x - 1, y), new Position(x + 1, y),
-                                    new Position(x, y + 1), new Position(x, y - 1)};
+                new Position(x, y + 1), new Position(x, y - 1)};
             for (Position choice: choices) {
                 if (!player.isCollision(choice) && !path.contains(choice)) {
                     poses.push(choice);
@@ -130,7 +131,8 @@ public class Game {
                 msg = "Player";
             }
         }
-        StdDraw.textLeft(0, HEIGHT - HEADSUP_HEIGHT / 2, msg);
+        String time = "current time:" + Calendar.getInstance().getTime();
+        StdDraw.textLeft(0, HEIGHT - HEADSUP_HEIGHT / 2, msg + ", " + time);
         StdDraw.show();
         StdDraw.pause(25);
     }
