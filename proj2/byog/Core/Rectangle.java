@@ -9,8 +9,10 @@ public class Rectangle {
     protected Position leftDown;
     protected Position rightUp;
     public void drawEdge(TETile[][] map) {
-        drawHorizontally(map);
-        drawVertically(map);
+        drawHorizontally(map, leftDown.getY());
+        drawHorizontally(map, rightUp.getY());
+        drawVertically(map, leftDown.getX());
+        drawVertically(map, rightUp.getX());
     }
 
     public void drawFloor(TETile[][] map) {
@@ -21,21 +23,19 @@ public class Rectangle {
         }
     }
 
-    protected void drawVertically(TETile[][] map) {
+    protected void drawVertically(TETile[][] map, int x) {
         int min = leftDown.getY();
         int max = rightUp.getY();
         for (int i = min; i <= max; i++) {
-            map[leftDown.getX()][i] = Tileset.WALL;
-            map[rightUp.getX()][i] = Tileset.WALL;
+            map[x][i] = Tileset.WALL;
         }
     }
 
-    protected void drawHorizontally(TETile[][] map) {
+    protected void drawHorizontally(TETile[][] map, int y) {
         int min = leftDown.getX();
         int max = rightUp.getX();
         for (int i = min; i <= max; i++) {
-            map[i][leftDown.getY()] = Tileset.WALL;
-            map[i][rightUp.getY()] = Tileset.WALL;
+            map[i][y] = Tileset.WALL;
         }
     }
 

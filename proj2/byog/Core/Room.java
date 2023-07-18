@@ -33,7 +33,7 @@ public class Room extends Rectangle {
 
     public void verticalHallway(List<Room> rooms, List<Hallway> hallways,
                                  Set<Room> connected, int height) {
-        for (int i = getLeftDown().getX(); i <= getRightUp().getX(); i += 2) {
+        for (int i = getLeftDown().getX() + 1; i < getRightUp().getX(); i += 2) {
             Hallway hallway = new Hallway(new Position(i, 0), height - 2, true);
             for (Room room: rooms) {
                 if (room == this) {
@@ -43,11 +43,11 @@ public class Room extends Rectangle {
                     connected.add(room);
                     hallways.add(hallway);
                     if (isUpNeighbor(room)) {
-                        hallway.leftDown.setY(this.rightUp.getY() - 1);
-                        hallway.rightUp.setY(room.leftDown.getY() + 1);
+                        hallway.leftDown.setY(this.rightUp.getY() - 2);
+                        hallway.rightUp.setY(room.leftDown.getY() + 2);
                     } else if (isDownNeighbor(room)) {
-                        hallway.leftDown.setY(room.rightUp.getY() - 1);
-                        hallway.rightUp.setY(this.leftDown.getY() + 1);
+                        hallway.leftDown.setY(room.rightUp.getY() - 2);
+                        hallway.rightUp.setY(this.leftDown.getY() + 2);
                     }
                     return;
                 }
@@ -57,7 +57,7 @@ public class Room extends Rectangle {
 
     public void horizontalHallway(List<Room> rooms,
                                    List<Hallway> hallways, Set<Room> connected, int width) {
-        for (int i = getLeftDown().getY(); i <= getRightUp().getY(); i += 2) {
+        for (int i = getLeftDown().getY() + 1; i < getRightUp().getY(); i += 2) {
             Hallway hallway = new Hallway(new Position(0, i), width - 2, false);
             for (Room room: rooms) {
                 if (room == this) {
@@ -67,11 +67,11 @@ public class Room extends Rectangle {
                     connected.add(room);
                     hallways.add(hallway);
                     if (isRightNeighbor(room)) {
-                        hallway.leftDown.setX(this.rightUp.getX() - 1);
-                        hallway.rightUp.setX(room.leftDown.getX() + 1);
+                        hallway.leftDown.setX(this.rightUp.getX() - 2);
+                        hallway.rightUp.setX(room.leftDown.getX() + 2);
                     } else if (isLeftNeighbor(room)) {
-                        hallway.leftDown.setX(room.rightUp.getX() - 1);
-                        hallway.rightUp.setX(this.leftDown.getX() + 1);
+                        hallway.leftDown.setX(room.rightUp.getX() - 2);
+                        hallway.rightUp.setX(this.leftDown.getX() + 2);
                     }
                     return;
                 }

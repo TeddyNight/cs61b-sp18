@@ -50,7 +50,7 @@ public class MapGenerator implements java.io.Serializable {
         Set<Room> connected = new HashSet<>();
         connected.add(rooms.get(0));
         /**
-         * Assumption:
+         * Assumption: there's intersection in x & y between rooms
          */
         while (connected.size() != rooms.size()) {
             for (Object o: connected.toArray()) {
@@ -89,7 +89,7 @@ public class MapGenerator implements java.io.Serializable {
 
 
     private Position randomPoint() {
-        return new Position(r.nextInt(this.width - 3) + 3, r.nextInt(this.height - 3) + 3);
+        return new Position(r.nextInt(this.width - 4) + 4, r.nextInt(this.height - 4) + 4);
     }
 
     private Position randomPoint(Position p) {
@@ -100,8 +100,8 @@ public class MapGenerator implements java.io.Serializable {
         Room room = null;
         Position rightUp = randomPoint();
         Position leftDown = randomPoint(rightUp);
-        while (leftDown.distanceX(rightUp) < 3
-                || leftDown.distanceY(rightUp) < 3
+        while (leftDown.distanceX(rightUp) < 4
+                || leftDown.distanceY(rightUp) < 4
                 || leftDown.distanceX(rightUp) > this.width / 6
                 || leftDown.distanceY(rightUp) > this.width / 6) {
             leftDown = randomPoint(rightUp);
