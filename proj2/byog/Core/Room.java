@@ -17,7 +17,7 @@ public class Room extends Rectangle {
 
     public void verticalHallways(List<Room> rooms, List<Hallway> hallways,
                                  Set<Room> connected, int height) {
-        for (int i = getLeftDown().getX() + 1; i < getRightUp().getX() - 2; i += 2) {
+        for (int i = getLeftDown().getX() + 1; i < getRightUp().getX(); i += 2) {
             Hallway hallway = new Hallway(new Position(i, 0), height - 2, true);
             boolean isConnected = false;
             for (Room room: rooms) {
@@ -42,7 +42,7 @@ public class Room extends Rectangle {
 
     public void horizontalHallways(List<Room> rooms,
                                    List<Hallway> hallways, Set<Room> connected, int width) {
-        for (int i = getLeftDown().getY() + 1; i < getRightUp().getY() - 2; i += 2) {
+        for (int i = getLeftDown().getY() + 1; i < getRightUp().getY(); i += 2) {
             Hallway hallway = new Hallway(new Position(0, i), width - 2, false);
             boolean isConnected = false;
             for (Room room: rooms) {

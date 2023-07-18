@@ -66,22 +66,22 @@ public class Rectangle {
 
     public boolean overlaps(Room r) {
         if (r.leftDown.equals(this.rightUp) || r.rightUp.equals(this.leftDown)) {
-            return true;
+            return false;
         }
         // left neighbor
-        if (r.rightUp.getX() < leftDown.getX()) {
+        if (r.rightUp.getX() <= leftDown.getX()) {
             return false;
         }
         // right neighbor
-        if (r.leftDown.getX() > rightUp.getX()) {
+        if (r.leftDown.getX() >= rightUp.getX()) {
             return false;
         }
         // up neighbor
-        if (r.leftDown.getY() > rightUp.getY()) {
+        if (r.leftDown.getY() >= rightUp.getY()) {
             return false;
         }
 
-        if (r.rightUp.getY() < leftDown.getY()) {
+        if (r.rightUp.getY() <= leftDown.getY()) {
             return false;
         }
 

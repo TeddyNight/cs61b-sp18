@@ -69,7 +69,14 @@ public class Game {
                 }
                 player.move(in);
             }
+            if (StdDraw.isMousePressed()) {
+                moveMouse(finalWorldFrame, player);
+            }
         }
+    }
+
+    private void moveMouse(TETile[][] finalWorldFrame, Player player) {
+
     }
 
     private void renderHeadsup(TETile[][] finalWorldFrame) {
