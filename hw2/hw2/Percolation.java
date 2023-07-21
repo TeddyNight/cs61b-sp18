@@ -8,6 +8,7 @@ import java.util.List;
 public class Percolation {
     private int N;
     private WeightedQuickUnionUF grids;
+    private boolean[] isOpened;
     int openSite;
     /**
      * create N-by-N grid, with all sites initially blocked
@@ -18,15 +19,15 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         this.N = N;
-        grids = new WeightedQuickUnionUF(N * N + 3);
-        openSite = 0;
+        grids = new WeightedQuickUnionUF(N * N + 2);
+        isOpened = new boolean[N * N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 int site = xyTo1D(i, j);
-                // mark the site blocked
-                grids.union(site, N * N + 2);
+                isOpened[site] = false;
             }
         }
+        openSite = 0;
     }
 
     /**
@@ -36,7 +37,7 @@ public class Percolation {
      * @return
      */
     private int xyTo1D(int r, int c) {
-        return r * 5 + c;
+        return r * N + c;
     }
 
     /**
@@ -50,11 +51,11 @@ public class Percolation {
         }
         int site = xyTo1D(row, col);
         // open already
-        if (grids.connected(site, N * N)) {
+        if (isOpen(row, col)) {
             return;
         }
+        isOpened[site] = true;
         openSite++;
-        grids.union(site, site);
         if (row == 0) {
             // virtual top site
             grids.union(site, N * N);
@@ -64,15 +65,12 @@ public class Percolation {
             grids.union(site, N * N + 1);
         }
         for (int neighbor: neighborSite(row, col)) {
-            // not connected
-            if (grids.find(neighbor) != N * N + 2) {
-                grids.union(site, neighbor);
-            }
+            grids.union(site, neighbor);
         }
     }
 
     /**
-     * return all possible valid neighbors
+     * return all opened neighbors
      * @param row
      * @param col
      * @return
@@ -81,7 +79,8 @@ public class Percolation {
         final int[][] neighbors = {{row - 1, col}, {row + 1, col}, {row, col + 1}, {row, col - 1}};
         List<Integer> ret = new ArrayList<>();
         for (int[] neighbor: neighbors) {
-            if (isValidSite(neighbor[0], neighbor[1])) {
+            if (isValidSite(neighbor[0], neighbor[1])
+                    && isOpen(neighbor[0], neighbor[1])) {
                 ret.add(xyTo1D(neighbor[0], neighbor[1]));
             }
         }
@@ -98,7 +97,8 @@ public class Percolation {
         if (!isValidSite(row, col)) {
             throw new IndexOutOfBoundsException();
         }
-        return true;
+        int site = xyTo1D(row, col);
+        return isOpened[site];
     }
 
     /**
