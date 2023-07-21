@@ -24,7 +24,7 @@ public class PercolationStats {
         this.T = T;
         results = new double[T];
         for (int i = 0; i < T; i++) {
-            Percolation exp = new Percolation(N);
+            Percolation exp = pf.make(N);
             results[i] = doExperiment(exp);
         }
     }
