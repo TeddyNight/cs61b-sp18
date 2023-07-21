@@ -8,8 +8,9 @@ import java.util.List;
 public class Percolation {
     private int N;
     private WeightedQuickUnionUF grids;
+    private WeightedQuickUnionUF flow;
     private boolean[] isOpened;
-    int openSite;
+    private int openSite;
     /**
      * create N-by-N grid, with all sites initially blocked
      * @param N
@@ -20,6 +21,7 @@ public class Percolation {
         }
         this.N = N;
         grids = new WeightedQuickUnionUF(N * N + 2);
+        flow = new WeightedQuickUnionUF(N * N + 1);
         isOpened = new boolean[N * N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -58,6 +60,7 @@ public class Percolation {
         openSite++;
         if (row == 0) {
             // virtual top site
+            flow.union(site, N * N);
             grids.union(site, N * N);
         }
         if (row == N - 1) {
@@ -66,6 +69,7 @@ public class Percolation {
         }
         for (int neighbor: neighborSite(row, col)) {
             grids.union(site, neighbor);
+            flow.union(site, neighbor);
         }
     }
 
@@ -112,7 +116,7 @@ public class Percolation {
             throw new IndexOutOfBoundsException();
         }
         int site = xyTo1D(row, col);
-        return grids.connected(site, N * N);
+        return flow.connected(site, N * N);
     }
 
     /**
