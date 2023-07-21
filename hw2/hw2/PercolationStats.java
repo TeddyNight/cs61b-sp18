@@ -35,7 +35,7 @@ public class PercolationStats {
             int col = StdRandom.uniform(0, N);
             exp.open(row, col);
         }
-        return (double) exp.numberOfOpenSites() / N * N;
+        return (double) exp.numberOfOpenSites() / (N * N);
     }
 
     /**
