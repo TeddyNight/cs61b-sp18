@@ -1,7 +1,9 @@
 package lab9;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Implementation of interface Map61B with BST as core data structure.
@@ -102,7 +104,19 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> keys = new HashSet<>();
+        Stack<Node> nodes = new Stack<>();
+        nodes.push(root);
+        while (!nodes.isEmpty()) {
+            Node cur = nodes.pop();
+            if (cur == null) {
+                continue;
+            }
+            keys.add(cur.key);
+            nodes.push(cur.left);
+            nodes.push(cur.right);
+        }
+        return keys;
     }
 
     /** Removes KEY from the tree if present
@@ -111,8 +125,54 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        if (size() == 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        V ret = get(key);
+        root = remove(key, root);
+        return ret;
     }
+
+    /**
+     * @source https://algs4.cs.princeton.edu/32bst/BST.java.html
+     * @param key
+     * @param p
+     * @return
+     */
+    private Node remove(K key, Node p) {
+        Node ret = p;
+        int cmp = p.key.compareTo(key);
+        if (cmp < 0) {
+            p.left = remove(key, p.left);
+        } else if (cmp > 0) {
+            p.right = remove(key, p.right);
+        } else {
+            ret = max(p.left);
+            ret.right = p.right;
+            ret.left = removeMax(p.left);
+        }
+        return ret;
+    }
+
+    private Node max(Node p) {
+        if (p.right == null) {
+            return p;
+        } else {
+            return max(p.right);
+        }
+    }
+
+    private Node removeMax(Node p) {
+        if (p.right == null) {
+            return p.left;
+        }
+        p.right = removeMax(p.right);
+        return p;
+    }
+
 
     /** Removes the key-value entry for the specified key only if it is
      *  currently mapped to the specified value.  Returns the VALUE removed,
@@ -120,11 +180,43 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        V cur = get(key);
+        if (cur == null || !cur.equals(value)) {
+            return null;
+        }
+        root = remove(key, root);
+        return cur;
+    }
+
+    private class MapIterator implements Iterator<K> {
+        private Stack<Node> nodes;
+        MapIterator() {
+            nodes = new Stack<>();
+            if (size() == 0) {
+                throw new NullPointerException();
+            }
+            nodes.push(root);
+        }
+        @Override
+        public boolean hasNext() {
+            return nodes.isEmpty();
+        }
+
+        @Override
+        public K next() {
+            Node cur = nodes.pop();
+            if (cur.left != null) {
+                nodes.push(cur.left);
+            }
+            if (cur.right != null) {
+                nodes.push(cur.right);
+            }
+            return cur.key;
+        }
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        return new MapIterator();
     }
 }
