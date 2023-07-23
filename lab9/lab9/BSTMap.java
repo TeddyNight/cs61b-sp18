@@ -143,6 +143,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      * @return
      */
     private Node remove(K key, Node p) {
+        if (p == null) {
+            return null;
+        }
         Node ret = p;
         int cmp = p.key.compareTo(key);
         if (cmp < 0) {
@@ -150,6 +153,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else if (cmp > 0) {
             p.right = remove(key, p.right);
         } else {
+            // case 1 & case 2: one right child
+            if (p.left == null) {
+                return p.right;
+            }
             ret = max(p.left);
             ret.right = p.right;
             ret.left = removeMax(p.left);
