@@ -165,8 +165,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 return p.left;
             }
             ret = max(p.left);
-            ret.right = p.right;
             ret.left = removeMax(p.left);
+            ret.right = p.right;
         }
         return ret;
     }
@@ -233,5 +233,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     @Override
     public Iterator<K> iterator() {
         return keySet().iterator();
+    }
+
+    public static void main(String[] args) {
+        BSTMap<String, Integer> bstmap = new BSTMap<>();
+        bstmap.put("hello", 5);
+        bstmap.put("cat", 10);
+        bstmap.put("fish", 22);
+        bstmap.put("zebra", 90);
+        bstmap.remove("hello");
     }
 }
