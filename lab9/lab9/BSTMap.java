@@ -125,14 +125,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        if (size() == 0) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (key == null) {
-            throw new IllegalArgumentException();
+        if (size() == 0 || key == null) {
+            return null;
         }
         V ret = get(key);
-        root = remove(key, root);
+        if (ret != null) {
+            root = remove(key, root);
+            size--;
+        }
         return ret;
     }
 
@@ -185,6 +185,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return null;
         }
         root = remove(key, root);
+        size--;
         return cur;
     }
 

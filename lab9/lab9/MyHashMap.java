@@ -113,6 +113,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (ret != null) {
             int hash = hash(key);
             buckets[hash].remove(key);
+            size--;
         }
         return ret;
     }
@@ -123,9 +124,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public V remove(K key, V value) {
         V ret = get(key);
-        if (ret != null && !ret.equals(value)) {
+        if (ret != null && ret.equals(value)) {
             int hash = hash(key);
             buckets[hash].remove(key);
+            size--;
         }
         return ret;
     }
