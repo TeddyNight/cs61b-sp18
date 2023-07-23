@@ -153,9 +153,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else if (cmp > 0) {
             p.right = remove(key, p.right);
         } else {
-            // case 1 & case 2: one right child
+            //case 2: one child
             if (p.left == null) {
                 return p.right;
+            }
+            if (p.right == null) {
+                return p.left;
             }
             ret = max(p.left);
             ret.right = p.right;
