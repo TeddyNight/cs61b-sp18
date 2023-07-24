@@ -33,18 +33,29 @@ public class TestComplexOomage {
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(oomages, 10));
     }
 
-    /* TODO: Create a list of Complex Oomages called deadlyList
+    /* a list of Complex Oomages called deadlyList
      * that shows the flaw in the hashCode function.
      */
-    /*
+
     @Test
     public void testWithDeadlyParams() {
         List<Oomage> deadlyList = new ArrayList<>();
-
-        // Your code here.
-
+        for (int i = 5; i < 25; i++) {
+            /**
+             * JSL 15.7.1
+             * If an integer multiplication overflows,
+             * then the result is the low-order bits of the mathematical product
+             * as represented in some sufficiently large two’s-complement format
+             */
+            List<Integer> params = new ArrayList<>();
+            for (int j = 0; j < i; j++) {
+                params.add(0);
+            }
+            params.add(1);
+            deadlyList.add(new ComplexOomage(params));
+        }
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(deadlyList, 10));
-    } */
+    }
 
     /** Calls tests for SimpleOomage. */
     public static void main(String[] args) {
