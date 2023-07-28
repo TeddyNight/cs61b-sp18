@@ -16,8 +16,18 @@ public class MazeAStarPath extends MazeExplorer {
         maze = m;
         s = maze.xyTo1D(sourceX, sourceY);
         t = maze.xyTo1D(targetX, targetY);
+        initializeDist();
         distTo[s] = 0;
         edgeTo[s] = s;
+    }
+
+    private void initializeDist() {
+        int N = maze.N();
+        int V = maze.V();
+        int dist = N * N;
+        for (int i = 0; i < V; i++) {
+            distTo[i] = dist;
+        }
     }
 
     /** Estimate of the distance from v to the target. */
@@ -49,6 +59,10 @@ public class MazeAStarPath extends MazeExplorer {
             }
             for (int w: maze.adj(v)) {
                 if (!marked[w]) {
+                    // we know already know the fastest way to w
+                    if (distTo[v] + 1 > distTo[w]) {
+                        continue;
+                    }
                     distTo[w] = distTo[v] + 1;
                     toVisit.insert(new Node(w, distTo[w] + h(w)));
                     edgeTo[w] = v;
