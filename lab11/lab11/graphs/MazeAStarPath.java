@@ -35,9 +35,14 @@ public class MazeAStarPath extends MazeExplorer {
     private void astar(int x) {
         MinPQ<Node> toVisit = new MinPQ<Node>();
         toVisit.insert(new Node(x, distTo[x] + h(x)));
-        marked[x] = true;
         while (!toVisit.isEmpty() && !targetFound) {
             int v = toVisit.delMin().v;
+            /**
+             * see FAQ on https://sp18.datastructur.es/materials/hw/hw4/hw4
+             * mark should only do when dequeue
+             * nodes can be enqueued twice
+             */
+            marked[v] = true;
             announce();
             if (v == t) {
                 targetFound = true;
@@ -47,7 +52,6 @@ public class MazeAStarPath extends MazeExplorer {
                     distTo[w] = distTo[v] + 1;
                     toVisit.insert(new Node(w, distTo[w] + h(w)));
                     edgeTo[w] = v;
-                    marked[v] = true;
                     announce();
                 }
             }
