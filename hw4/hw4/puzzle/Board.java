@@ -104,10 +104,21 @@ public class Board implements WorldState {
         return sum;
     }
 
+    /**
+     * sum of the vertical and horizontal distance from
+     * the tile (i, j) to their goal positions
+     * @param i
+     * @param j
+     * @return
+     */
     private int manhattanDist(int i, int j) {
-        int correct = tiles[i][j];
-        int x = correct / N;
-        int y = (correct % N) - 1;
+        int goal = tiles[i][j];
+        int x = N - 1;
+        int y = N - 1;
+        if (goal != 0) {
+            x = goal / N;
+            y = (goal % N) - 1;
+        }
         return Math.abs(i - x) + Math.abs(j - y);
     }
 
