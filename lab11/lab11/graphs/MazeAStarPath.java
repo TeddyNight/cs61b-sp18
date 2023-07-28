@@ -1,5 +1,7 @@
 package lab11.graphs;
 
+import edu.princeton.cs.algs4.MinPQ;
+
 /**
  *  @author Josh Hug
  */
@@ -29,35 +31,46 @@ public class MazeAStarPath extends MazeExplorer {
         /* You do not have to use this method. */
     }
 
-    private int findMinimumUnmarked(int v) {
-        int x = s;
-        int dist = h(s);
-        for (int w: maze.adj(v)) {
-            int h = h(w);
-            if (!marked[w] && h < dist) {
-                x = w;
-                dist = h;
-            }
-        }
-        return x;
-    }
-
     /** Performs an A star search from vertex s. */
     private void astar(int x) {
-        while (x != t) {
-            marked[x] = true;
+        MinPQ<Node> toVisit = new MinPQ<Node>();
+        toVisit.insert(new Node(x, distTo[x] + h(x)));
+        while (!toVisit.isEmpty() && !targetFound) {
+            int v = toVisit.delMin().v;
+            marked[v] = true;
             announce();
-            int w = findMinimumUnmarked(x);
-            distTo[w] = distTo[x] + 1;
-            edgeTo[w] = x;
-            announce();
-            x = w;
+            if (v == t) {
+                targetFound = true;
+            }
+            for (int w: maze.adj(v)) {
+                if (!marked[w]) {
+                    distTo[w] = distTo[v] + 1;
+                    toVisit.insert(new Node(w, distTo[w] + h(w)));
+                    edgeTo[w] = v;
+                    announce();
+                }
+            }
         }
     }
 
     @Override
     public void solve() {
         astar(s);
+    }
+
+    private class Node implements Comparable<Node> {
+        int v;
+        int dist;
+
+        @Override
+        public int compareTo(Node o) {
+            return dist - o.dist;
+        }
+
+        Node(int v, int dist) {
+            this.v = v;
+            this.dist = dist;
+        }
     }
 
 }
