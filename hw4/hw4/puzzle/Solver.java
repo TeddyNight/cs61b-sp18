@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class Solver {
     Map<WorldState, Integer> distTo;
-    Map<WorldState, WorldState> edgeTo;
     WorldState s;
     WorldState t;
     Map<WorldState, Integer> estimate;
+    Stack<WorldState> solution;
 
     /**
      * Constructor which solves the puzzle, computing
@@ -23,10 +23,9 @@ public class Solver {
     public Solver(WorldState initial) {
         s = initial;
         t = null;
-        edgeTo = new HashMap<>();
         distTo = new HashMap<>();
         estimate = new HashMap<>();
-        edgeTo.put(initial, null);
+        solution = new Stack<>();
         distTo.put(initial, 0);
         aStar(initial);
     }
@@ -43,23 +42,30 @@ public class Solver {
         toVisit.insert(new Node(initial, estimatedDistanceToGoal(initial), null));
         while (!toVisit.isEmpty()) {
             Node cur = toVisit.delMin();
+            Node parent = cur.parent;
             WorldState v = cur.v;
-            WorldState parent = cur.parent;
             if (v.isGoal()) {
+                buildSolution(cur);
                 t = v;
                 break;
             }
             for (WorldState w: v.neighbors()) {
-                if (!w.equals(parent)) {
+                if (parent == null || !w.equals(parent.v)) {
                     // we know already know the fastest way to W
                     if (distTo.containsKey(w) && distTo.get(v) + 1 > distTo.get(w)) {
                         continue;
                     }
-                    edgeTo.put(w, v);
                     distTo.put(w, distTo.get(v) + 1);
-                    toVisit.insert(new Node(w, distTo.get(w) + estimatedDistanceToGoal(w), v));
+                    toVisit.insert(new Node(w, distTo.get(w) + estimatedDistanceToGoal(w), cur));
                 }
             }
+        }
+    }
+
+    private void buildSolution(Node cur) {
+        while (cur.parent != null) {
+            solution.push(cur.v);
+            cur = cur.parent;
         }
     }
 
@@ -78,22 +84,15 @@ public class Solver {
      * @return
      */
     public Iterable<WorldState> solution() {
-        Stack<WorldState> res = new Stack<>();
-        WorldState v = t;
-        while (v != null) {
-            res.push(v);
-            v = edgeTo.get(v);
-        }
-        res.push(s);
-        return res;
+        return solution;
     }
 
     private class Node implements Comparable<Node> {
         WorldState v;
         int dist;
-        WorldState parent;
+        Node parent;
 
-        Node(WorldState v, int dist, WorldState parent) {
+        Node(WorldState v, int dist, Node parent) {
             this.v = v;
             this.dist = dist;
             this.parent = parent;
