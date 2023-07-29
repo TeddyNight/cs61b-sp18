@@ -10,6 +10,7 @@ public class Board implements WorldState {
     private int blankX;
     private int blankY;
     private int manhattan = 0;
+    private int hamming;
     /**
      * Constructs a board from an N-by-N array of tiles where
      * tiles[i][j] = tile at row i, column j
@@ -25,6 +26,8 @@ public class Board implements WorldState {
                     blankX = i;
                     blankY = j;
                     continue;
+                } else if (tileAt(i, j) != goalTile(i, j)) {
+                    hamming++;
                 }
                 manhattan += manhattanDist(i, j);
             }
@@ -56,11 +59,9 @@ public class Board implements WorldState {
         return N;
     }
 
-    private void moveToBlank(int i, int j) {
-        manhattan -= manhattanDist(blankX, blankY) + manhattanDist(i, j);
+    private void moveBlankTo(int i, int j) {
         tiles[blankX][blankY] = tileAt(i, j);
         tiles[i][j] = 0;
-        manhattan += manhattanDist(blankX, blankY) + manhattanDist(i, j);
         blankX = i;
         blankY = j;
     }
@@ -73,14 +74,15 @@ public class Board implements WorldState {
         List<WorldState> res = new ArrayList<>();
         int[][] directions = {{blankX - 1, blankY}, {blankX + 1, blankY},
             {blankX, blankY + 1}, {blankX, blankY - 1}};
+        int x = blankX;
+        int y = blankY;
         for (int[] direction: directions) {
-            int x = direction[0];
-            int y = direction[1];
-            if (!isValidPos(x, y)) {
+            if (!isValidPos(direction[0], direction[1])) {
                 continue;
             }
+            moveBlankTo(x, y);
+            moveBlankTo(direction[0], direction[1]);
             Board w = new Board(tiles);
-            w.moveToBlank(x, y);
             res.add(w);
         }
         return res;
@@ -98,15 +100,7 @@ public class Board implements WorldState {
      * @return
      */
     public int hamming() {
-        int sum = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (tiles[i][j] != goalTile(i, j)) {
-                    sum++;
-                }
-            }
-        }
-        return sum;
+        return hamming;
     }
 
     /**
@@ -160,9 +154,6 @@ public class Board implements WorldState {
             return false;
         }
         Board board = (Board) o;
-        if (board.blankY != blankY && board.blankX != blankX) {
-            return false;
-        }
         return Arrays.equals(tiles, board.tiles);
     }
 
