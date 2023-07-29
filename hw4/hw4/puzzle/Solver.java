@@ -4,12 +4,9 @@ import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Solver {
-    Set<WorldState> marked;
     Map<WorldState, Integer> distTo;
     Map<WorldState, WorldState> edgeTo;
     WorldState s;
@@ -28,9 +25,8 @@ public class Solver {
         t = null;
         edgeTo = new HashMap<>();
         distTo = new HashMap<>();
-        marked = new HashSet<>();
         estimate = new HashMap<>();
-        edgeTo.put(initial, initial);
+        edgeTo.put(initial, null);
         distTo.put(initial, 0);
         aStar(initial);
     }
@@ -49,18 +45,12 @@ public class Solver {
             Node cur = toVisit.delMin();
             WorldState v = cur.v;
             WorldState parent = cur.parent;
-            /**
-             * see FAQ on https://sp18.datastructur.es/materials/hw/hw4/hw4
-             * mark should only do when dequeue
-             * nodes can be enqueued twice
-             */
-            marked.add(v);
             if (v.isGoal()) {
                 t = v;
                 break;
             }
             for (WorldState w: v.neighbors()) {
-                if (!marked.contains(w) && !w.equals(parent)) {
+                if (!w.equals(parent)) {
                     // we know already know the fastest way to W
                     if (distTo.containsKey(w) && distTo.get(v) + 1 > distTo.get(w)) {
                         continue;
@@ -90,7 +80,7 @@ public class Solver {
     public Iterable<WorldState> solution() {
         Stack<WorldState> res = new Stack<>();
         WorldState v = t;
-        while (!v.equals(s)) {
+        while (v != null) {
             res.push(v);
             v = edgeTo.get(v);
         }

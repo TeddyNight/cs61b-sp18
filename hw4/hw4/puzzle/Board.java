@@ -81,7 +81,7 @@ public class Board implements WorldState {
         return res;
     }
 
-    private int xyTo1D(int i, int j) {
+    private int goalTile(int i, int j) {
         if (i == N - 1 && j == N - 1) {
             return 0;
         }
@@ -96,7 +96,7 @@ public class Board implements WorldState {
         int sum = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (tiles[i][j] != xyTo1D(i, j)) {
+                if (tiles[i][j] != goalTile(i, j)) {
                     sum++;
                 }
             }
@@ -130,7 +130,7 @@ public class Board implements WorldState {
         int sum = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (tiles[i][j] != xyTo1D(i, j)) {
+                if (tiles[i][j] != goalTile(i, j)) {
                     sum += manhattanDist(i, j);
                 }
             }
@@ -166,10 +166,10 @@ public class Board implements WorldState {
         return Arrays.equals(tiles, board.tiles);
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(tiles);
-    }
+//    @Override
+//    public int hashCode() {
+//        return Arrays.hashCode(tiles);
+//    }
 
     /** Returns the string representation of the board.
       * Uncomment this method. */
