@@ -64,6 +64,7 @@ public class Solver {
             solution.push(cur.v);
             cur = cur.parent;
         }
+        solution.push(cur.v);
     }
 
     /**
@@ -72,7 +73,7 @@ public class Solver {
      * @return
      */
     public int moves() {
-        return solution.size();
+        return solution.size() - 1;
     }
 
     /**
