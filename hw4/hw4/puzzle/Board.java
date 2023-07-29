@@ -9,6 +9,7 @@ public class Board implements WorldState {
     private int[][] tiles;
     private int blankX;
     private int blankY;
+    private int manhattan = 0;
     /**
      * Constructs a board from an N-by-N array of tiles where
      * tiles[i][j] = tile at row i, column j
@@ -19,11 +20,13 @@ public class Board implements WorldState {
         this.tiles = new int[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (tiles[i][j] == 0) {
+                this.tiles[i][j] = tiles[i][j];
+                if (tileAt(i, j) == 0) {
                     blankX = i;
                     blankY = j;
+                    continue;
                 }
-                this.tiles[i][j] = tiles[i][j];
+                manhattan += manhattanDist(i, j);
             }
         }
     }
@@ -54,8 +57,10 @@ public class Board implements WorldState {
     }
 
     private void moveToBlank(int i, int j) {
-        tiles[blankX][blankY] = tiles[i][j];
+        manhattan -= manhattanDist(blankX, blankY) + manhattanDist(i, j);
+        tiles[blankX][blankY] = tileAt(i, j);
         tiles[i][j] = 0;
+        manhattan += manhattanDist(blankX, blankY) + manhattanDist(i, j);
         blankX = i;
         blankY = j;
     }
@@ -112,14 +117,14 @@ public class Board implements WorldState {
      * @return
      */
     private int manhattanDist(int i, int j) {
-        int goal = tiles[i][j];
-        int x = N - 1;
-        int y = N - 1;
-        if (goal != 0) {
-            x = goal / N;
-            y = (goal % N) - 1;
+        int tile = tileAt(i, j);
+        if (tile == 0) {
+            return 0;
         }
-        return Math.abs(i - x) + Math.abs(j - y);
+        int goal = tile - 1;
+        int goalX = goal / N;
+        int goalY = goal % N;
+        return Math.abs(i - goalX) + Math.abs(j - goalY);
     }
 
     /**
@@ -127,15 +132,7 @@ public class Board implements WorldState {
      * @return
      */
     public int manhattan() {
-        int sum = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (tiles[i][j] != goalTile(i, j)) {
-                    sum += manhattanDist(i, j);
-                }
-            }
-        }
-        return sum;
+        return manhattan;
     }
 
     /**
@@ -163,13 +160,16 @@ public class Board implements WorldState {
             return false;
         }
         Board board = (Board) o;
+        if (board.blankY != blankY && board.blankX != blankX) {
+            return false;
+        }
         return Arrays.equals(tiles, board.tiles);
     }
 
-//    @Override
-//    public int hashCode() {
-//        return Arrays.hashCode(tiles);
-//    }
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(tiles);
+    }
 
     /** Returns the string representation of the board.
       * Uncomment this method. */
