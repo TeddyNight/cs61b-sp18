@@ -15,7 +15,7 @@ public class Board implements WorldState {
      * tiles[i][j] = tile at row i, column j
      * @param tiles
      */
-    Board(int[][] tiles) {
+    public Board(int[][] tiles) {
         this.N = tiles.length;
         this.tiles = new int[N][N];
         for (int i = 0; i < N; i++) {

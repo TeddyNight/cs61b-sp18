@@ -7,11 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Solver {
-    Map<WorldState, Integer> distTo;
-    WorldState s;
-    WorldState t;
-    Map<WorldState, Integer> estimate;
-    Stack<WorldState> solution;
+    private Map<WorldState, Integer> distTo;
+    private Map<WorldState, Integer> estimate;
+    private Stack<WorldState> solution;
 
     /**
      * Constructor which solves the puzzle, computing
@@ -21,8 +19,6 @@ public class Solver {
      * @param initial
      */
     public Solver(WorldState initial) {
-        s = initial;
-        t = null;
         distTo = new HashMap<>();
         estimate = new HashMap<>();
         solution = new Stack<>();
@@ -44,19 +40,20 @@ public class Solver {
             Node cur = toVisit.delMin();
             Node parent = cur.parent;
             WorldState v = cur.v;
+            int curDist = distTo.get(v);
             if (v.isGoal()) {
                 buildSolution(cur);
-                t = v;
                 break;
             }
             for (WorldState w: v.neighbors()) {
                 if (parent == null || !w.equals(parent.v)) {
                     // we know already know the fastest way to W
-                    if (distTo.containsKey(w) && distTo.get(v) + 1 > distTo.get(w)) {
+                    int newDist = curDist + 1;
+                    if (distTo.containsKey(w) && newDist > distTo.get(w)) {
                         continue;
                     }
-                    distTo.put(w, distTo.get(v) + 1);
-                    toVisit.insert(new Node(w, distTo.get(w) + estimatedDistanceToGoal(w), cur));
+                    distTo.put(w, newDist);
+                    toVisit.insert(new Node(w, newDist + estimatedDistanceToGoal(w), cur));
                 }
             }
         }
@@ -75,7 +72,7 @@ public class Solver {
      * @return
      */
     public int moves() {
-        return distTo.get(t);
+        return solution.size();
     }
 
     /**

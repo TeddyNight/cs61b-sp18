@@ -80,8 +80,6 @@ public class TestSolver {
         }
     }
 
-
- /* Uncomment everything in this block once you've written Board.
      public static Board readBoard(String filename) {
         In in = new In(filename);
         int N = in.readInt();
@@ -113,6 +111,7 @@ public class TestSolver {
         for (int i = 0; i <= 30; i += 1) {
             String pnum = String.format("%02d", i);
             String puzzleName = "input/puzzle3x3-" + pnum + ".txt";
+            System.out.println(puzzleName);
             Board b = readBoard(puzzleName);
             int numMoves = i;
             BoardPuzzleSolution bps = new BoardPuzzleSolution(puzzleName, b, numMoves);
@@ -145,5 +144,5 @@ public class TestSolver {
             Solver s = new Solver(b);
             assertEquals("Wrong number of moves on " + puzzleName, bps.numMoves, s.moves());
         }
-    }*/
+    }
 }
