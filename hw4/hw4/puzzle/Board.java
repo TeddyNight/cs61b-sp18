@@ -80,9 +80,9 @@ public class Board implements WorldState {
             if (!isValidPos(direction[0], direction[1])) {
                 continue;
             }
-            moveBlankTo(x, y);
             moveBlankTo(direction[0], direction[1]);
             Board w = new Board(tiles);
+            moveBlankTo(x, y);
             res.add(w);
         }
         return res;
