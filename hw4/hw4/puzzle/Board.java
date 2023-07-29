@@ -154,7 +154,28 @@ public class Board implements WorldState {
             return false;
         }
         Board board = (Board) o;
-        return Arrays.equals(tiles, board.tiles);
+        /**
+         * Arrays.equals() does not work as expected for multidimensional arrays
+         * it only compares items of the 1st dimension for reference equality
+         * @source https://stackoverflow.com/questions/8777257/equals-vs-arrays-equals-in-java
+         */
+        if (board.size() != size()) {
+            return false;
+        }
+        if (board.blankX != blankX && board.blankY != blankY) {
+            return false;
+        }
+        if (board.manhattan != manhattan) {
+            return false;
+        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (tileAt(i, j) != board.tileAt(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
