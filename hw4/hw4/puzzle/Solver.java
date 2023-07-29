@@ -49,7 +49,7 @@ public class Solver {
                 if (parent == null || !w.equals(parent.v)) {
                     // we know already know the fastest way to W
                     int newDist = curDist + 1;
-                    if (distTo.containsKey(w) && newDist > distTo.get(w)) {
+                    if (distTo.containsKey(w) && newDist >= distTo.get(w)) {
                         continue;
                     }
                     distTo.put(w, newDist);
