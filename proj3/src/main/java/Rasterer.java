@@ -165,16 +165,8 @@ public class Rasterer {
         if (ullat < lrlat) {
             return false;
         }
-        if (ullon < MapServer.ROOT_ULLON) {
-            return false;
-        }
-        if (lrlon > MapServer.ROOT_LRLON) {
-            return false;
-        }
-        if (lrlat < MapServer.ROOT_LRLAT) {
-            return false;
-        }
-        if (ullat > MapServer.ROOT_ULLAT) {
+        if (ullon < MapServer.ROOT_ULLON && lrlon > MapServer.ROOT_LRLON
+                && lrlat < MapServer.ROOT_LRLAT && ullat > MapServer.ROOT_ULLAT) {
             return false;
         }
         return true;
