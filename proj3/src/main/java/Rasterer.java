@@ -44,9 +44,66 @@ public class Rasterer {
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         // System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+        if (!validParams(params)) {
+            results.put("query_success", false);
+            return results;
+        }
+        double lrlon = params.get("lrlon");
+        double ullon = params.get("ullon");
+        double w = params.get("w");
+        double h = params.get("h");
+        double boxLonDPP = calcLonDPP(lrlon, ullon, w);
+        int depth = getDepth(boxLonDPP, w, h);
+        results.put("depth", depth);
         return results;
+    }
+
+    private int getDepth(double boxLonDPP, double w, double h) {
+        int depth = 0;
+        double lrlon = MapServer.ROOT_LRLON;
+        double ullon = MapServer.ROOT_ULLON;
+        double lonDPP = calcLonDPP(lrlon, ullon, MapServer.TILE_SIZE);
+        while (lonDPP > boxLonDPP) {
+            depth++;
+            ullon = lrlon + (ullon - lrlon) / 2;
+            lonDPP = calcLonDPP(lrlon, ullon, MapServer.TILE_SIZE);
+        }
+        return depth;
+    }
+
+    private double calcLonDPP(double lrlon, double ullon, double w) {
+        return (lrlon - ullon) / w;
+    }
+
+    private boolean validParams(Map<String, Double> params) {
+        if (!params.containsKey("lrlon") || !params.containsKey("ullon")
+                || !params.containsKey("w") || !params.containsKey("h")
+                || !params.containsKey("ullat") || !params.containsKey("lrlat")) {
+            return false;
+        }
+        double lrlon = params.get("lrlon");
+        double ullon = params.get("ullon");
+        double ullat = params.get("ullat");
+        double lrlat = params.get("lrlat");
+        if (ullon > lrlon) {
+            return false;
+        }
+        if (ullat > lrlat) {
+            return false;
+        }
+        if (ullon < MapServer.ROOT_ULLON) {
+            return false;
+        }
+        if (lrlon > MapServer.ROOT_LRLON) {
+            return false;
+        }
+        if (lrlat < MapServer.ROOT_LRLAT) {
+            return false;
+        }
+        if (ullat > MapServer.ROOT_ULLAT) {
+            return false;
+        }
+        return true;
     }
 
 }
