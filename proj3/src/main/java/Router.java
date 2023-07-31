@@ -1,4 +1,8 @@
 import java.util.List;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +16,22 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+    static class Node implements Comparable<Node> {
+        long id;
+        double dist;
+        Node parent;
+
+        Node(long id, double dist, Node parent) {
+            this.id = id;
+            this.dist = dist;
+            this.parent = parent;
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            return Double.compare(dist, o.dist);
+        }
+    }
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +45,43 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        List<Long> res = new LinkedList<>();
+        long s = g.closest(stlon, stlat);
+        long t = g.closest(destlon, destlat);
+        PriorityQueue<Node> toVisit = new PriorityQueue<>();
+        Map<Long, Double> distTo = new HashMap<>();
+        distTo.put(s, 0d);
+        toVisit.add(new Node(s, g.distance(s, t), null));
+        while (!toVisit.isEmpty()) {
+            Node cur = toVisit.poll();
+            long v = cur.id;
+            if (v == t) {
+                buildPath(cur, res);
+                break;
+            }
+            double curDist = distTo.get(v);
+            for (Long w: g.adjacent(v)) {
+                if (cur.parent != null && w.equals(cur.parent.id)) {
+                    continue;
+                }
+                // add actual dist instead of 1
+                double newDist = curDist + g.distance(v, w);
+                if (distTo.containsKey(w) && Double.compare(newDist, distTo.get(w)) >= 0) {
+                    continue;
+                }
+                distTo.put(w, newDist);
+                toVisit.add(new Node(w, newDist + g.distance(w, t), cur));
+            }
+        }
+        return res;
+    }
+
+    private static void buildPath(Node cur, List<Long> res) {
+        if (cur == null) {
+            return;
+        }
+        buildPath(cur.parent, res);
+        res.add(cur.id);
     }
 
     /**
