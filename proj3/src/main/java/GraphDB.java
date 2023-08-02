@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -189,7 +188,8 @@ public class GraphDB {
     long closest(double lon, double lat) {
         long v = 0;
         double minDist = Double.MAX_VALUE;
-        for (Node node: nodes.values()) {
+        for (long w: graph.keySet()) {
+            Node node = nodes.get(w);
             double dist = distance(lon, lat, node.lon, node.lat);
             if (dist <= minDist) {
                 v = node.id;
@@ -257,7 +257,7 @@ public class GraphDB {
         return locations.get(name);
     }
 
-    Node getLocationByName(Long id) {
+    Node getLocationById(Long id) {
         return nodes.get(id);
     }
 }

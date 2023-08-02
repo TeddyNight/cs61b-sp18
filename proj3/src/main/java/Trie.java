@@ -24,7 +24,7 @@ public class Trie {
             return null;
         }
         Node node = root;
-        for (int i = 0; i < prefix.length(); i++) {
+        for (int i = 0; i < parsePattern(prefix).length(); i++) {
             Node child = node.children[key(prefix, i)];
             if (child == null) {
                 break;

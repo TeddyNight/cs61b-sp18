@@ -305,10 +305,20 @@ public class MapServer {
         for (String name: getLocationsByPrefix(locationName)) {
             for (Long id: graph.getLocationsByName(name)) {
                 Map<String, Object> obj = new HashMap<>();
-                obj.put(name, graph.getLocationByName(id));
+                obj.put(name, getLocationById(id));
                 res.add(obj);
             }
         }
+        return res;
+    }
+
+    private static Map<String, Object> getLocationById(long id) {
+        Map<String, Object> res = new HashMap<>();
+        GraphDB.Node location = graph.getLocationById(id);
+        res.put("id", location.id);
+        res.put("name", location.name);
+        res.put("lat", location.lat);
+        res.put("lon", location.lon);
         return res;
     }
 
