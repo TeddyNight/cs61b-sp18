@@ -304,9 +304,7 @@ public class MapServer {
         List<Map<String, Object>> res = new LinkedList<>();
         for (String name: getLocationsByPrefix(locationName)) {
             for (Long id: graph.getLocationsByName(name)) {
-                Map<String, Object> obj = new HashMap<>();
-                obj.put(name, getLocationById(id));
-                res.add(obj);
+                res.add(getLocationById(id));
             }
         }
         return res;
