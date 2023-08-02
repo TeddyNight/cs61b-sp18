@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -52,6 +53,8 @@ public class GraphDB {
     private Map<Long, Node> nodes = new HashMap<>();
     private Map<Long, Edge> edges = new HashMap<>();
     private Map<Long, Set<Long>> graph = new HashMap<>();
+    private Map<String, List<Long>> locations = new HashMap<>();
+    private Trie locationNames = new Trie();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -90,13 +93,21 @@ public class GraphDB {
      */
     private void clean() {
         List<Long> orphan = new LinkedList<>();
-        for (Long node: nodes.keySet()) {
-            if (graph.get(node).isEmpty()) {
-                orphan.add(node);
+        for (Long id: nodes.keySet()) {
+            Node node = nodes.get(id);
+            if (graph.get(id).isEmpty()) {
+                orphan.add(id);
+            }
+            if (node.name != null) {
+                if (!locations.containsKey(node.name)) {
+                    locations.put(node.name, new LinkedList<>());
+                }
+                locations.get(node.name).add(node.id);
+                locationNames.insert(node.name);
             }
         }
         for (Long node: orphan) {
-            nodes.remove(node);
+//            nodes.remove(node);
             graph.remove(node);
         }
     }
@@ -236,5 +247,17 @@ public class GraphDB {
             }
         }
         throw new RuntimeException();
+    }
+
+    List<String> getLocationsByPrefix(String prefix) {
+        return locationNames.findPrefix(prefix);
+    }
+
+    List<Long> getLocationsByName(String name) {
+        return locations.get(name);
+    }
+
+    Node getLocationByName(Long id) {
+        return nodes.get(id);
     }
 }
