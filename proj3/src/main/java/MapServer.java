@@ -301,23 +301,7 @@ public class MapServer {
      * "id" : Number, The id of the node. <br>
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
-        List<Map<String, Object>> res = new LinkedList<>();
-        for (String name: getLocationsByPrefix(locationName)) {
-            for (Long id: graph.getLocationsByName(name)) {
-                res.add(getLocationById(id));
-            }
-        }
-        return res;
-    }
-
-    private static Map<String, Object> getLocationById(long id) {
-        Map<String, Object> res = new HashMap<>();
-        GraphDB.Node location = graph.getLocationById(id);
-        res.put("id", location.id);
-        res.put("name", location.name);
-        res.put("lat", location.lat);
-        res.put("lon", location.lon);
-        return res;
+        return graph.getLocations(locationName);
     }
 
     /**
