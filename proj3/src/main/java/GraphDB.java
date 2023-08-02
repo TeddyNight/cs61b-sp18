@@ -31,10 +31,12 @@ public class GraphDB {
         double lat;
         double lon;
         String name;
+        Set<Long> ways;
         Node(long id, double lat, double lon) {
             this.id = id;
             this.lat = lat;
             this.lon = lon;
+            this.ways = new HashSet<>();
         }
     }
     static class Edge {
@@ -212,9 +214,27 @@ public class GraphDB {
     void addEdge(Edge edge) {
         edges.put(edge.id, edge);
         List<Long> list = edge.nodes;
+        nodes.get(list.get(0)).ways.add(edge.id);
         for (int i = 1; i < list.size(); i++) {
+            nodes.get(list.get(i)).ways.add(edge.id);
             graph.get(list.get(i - 1)).add(list.get(i));
             graph.get(list.get(i)).add(list.get(i - 1));
         }
+    }
+
+    /**
+     * find the way that contains specific two nodes
+     * @param v
+     * @param w
+     * @return the id of way
+     */
+    String getWay(long v, long w) {
+        Set<Long> ways = nodes.get(v).ways;
+        for (Long way: ways) {
+            if (edges.get(way).nodes.contains(w)) {
+                return edges.get(way).name;
+            }
+        }
+        throw new RuntimeException();
     }
 }

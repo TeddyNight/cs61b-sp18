@@ -93,9 +93,64 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> nav = new LinkedList<>();
+        NavigationDirection lastNav = new NavigationDirection();
+        double lastBearing = g.bearing(route.get(0), route.get(1));
+        lastNav.way = getWay(g, route.get(0), route.get(1));
+        lastNav.direction = NavigationDirection.START;
+        lastNav.distance = g.distance(route.get(0), route.get(1));
+        nav.add(lastNav);
+        for (int i = 2; i < route.size(); i++) {
+            long lastNode = route.get(i - 1);
+            long node = route.get(i);
+            String way = getWay(g, lastNode, node);
+            if (way.equals(lastNav.way)) {
+                lastBearing = g.bearing(lastNode, node);
+                lastNav.distance += g.distance(lastNode, node);
+            } else {
+                double curBearing = g.bearing(lastNode, node);
+                lastNav = new NavigationDirection();
+                lastNav.direction = getDirect(lastBearing, curBearing);
+                lastNav.way = way;
+                lastNav.distance = g.distance(lastNode, node);
+                nav.add(lastNav);
+                lastBearing = curBearing;
+            }
+        }
+        return nav;
     }
 
+    private static String getWay(GraphDB g, long v, long w) {
+        String ret = g.getWay(v, w);
+        if (ret == null) {
+            ret = NavigationDirection.UNKNOWN_ROAD;
+        }
+        return ret;
+    }
+
+    private static int getDirect(double lastBearing, double curBearing) {
+        int direction = NavigationDirection.STRAIGHT;
+        double angle = curBearing - lastBearing;
+        if (angle > 180) {
+            angle -= 360;
+        } else if (angle < -180) {
+            angle += 360;
+        }
+        if (angle >= -30 && angle < -15) {
+            direction = NavigationDirection.SLIGHT_LEFT;
+        } else if (angle <= 30 && angle > 15) {
+            direction = NavigationDirection.SLIGHT_RIGHT;
+        } else if (angle >= -100 && angle < -30) {
+            direction = NavigationDirection.LEFT;
+        } else if (angle <= 100 && angle > 30) {
+            direction = NavigationDirection.RIGHT;
+        } else if (angle < -100) {
+            direction = NavigationDirection.SHARP_LEFT;
+        } else if (angle > 100) {
+            direction = NavigationDirection.SHARP_RIGHT;
+        }
+        return direction;
+    }
 
     /**
      * Class to represent a navigation direction, which consists of 3 attributes:
@@ -120,7 +175,8 @@ public class Router {
         public static final String[] DIRECTIONS = new String[NUM_DIRECTIONS];
 
         /** Default name for an unknown way. */
-        public static final String UNKNOWN_ROAD = "unknown road";
+//        public static final String UNKNOWN_ROAD = "unknown road";
+        public static final String UNKNOWN_ROAD = "";
         
         /** Static initializer. */
         static {
