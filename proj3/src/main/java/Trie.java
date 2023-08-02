@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class Trie {
     class Node {
-        Node[] children = new Node[26];
+        Node[] children = new Node[27];
         boolean isTerminal;
         Set<String> values;
         Node() {
@@ -15,64 +15,64 @@ public class Trie {
     private Node root = new Node();
 
     private int key(String pattern, int i) {
-        pattern = parsePattern(pattern);
+        if (pattern.charAt(i) == ' ') {
+            return 26;
+        }
         return pattern.charAt(i) - 'a';
     }
 
     List<String> findPrefix(String prefix) {
         if (prefix == null) {
-            return null;
+            return new LinkedList<>();
         }
+        prefix = GraphDB.cleanString(prefix);
         Node node = root;
-        for (int i = 0; i < parsePattern(prefix).length(); i++) {
+        if (prefix.isEmpty()) {
+            List<String> res = new LinkedList<>();
+            if (node.isTerminal) {
+                res.addAll(node.values);
+            }
+            return res;
+        }
+        for (int i = 0; i < prefix.length(); i++) {
             Node child = node.children[key(prefix, i)];
             if (child == null) {
-                break;
+                return new LinkedList<>();
             }
             node = child;
         }
-        return getAll(node);
+        return findAll(node);
     }
 
-    private List<String> getAll(Node node) {
+    List<String> findAll(Node node) {
         List<String> res = new LinkedList<>();
+        if (node == null) {
+            return res;
+        }
         if (node.isTerminal) {
             res.addAll(node.values);
         }
         for (Node child: node.children) {
-            if (child == null) {
-                continue;
-            }
-            res.addAll(getAll(child));
+            res.addAll(findAll(child));
         }
         return res;
     }
 
-    private String parsePattern(String pattern) {
-        pattern = pattern.toLowerCase();
-        StringBuilder res = new StringBuilder();
-        for (char c: pattern.toCharArray()) {
-            if (c >= 'a' && c <= 'z') {
-                res.append(c);
-            }
-        }
-        return res.toString();
+    void insert(String content) {
+        String pattern = GraphDB.cleanString(content);
+        root = insert(root, pattern, content, 0);
     }
 
-    void insert(String pattern) {
-        root = insert(root, pattern, 0);
-    }
-
-    private Node insert(Node node, String pattern, int i) {
+    private Node insert(Node node, String pattern, String content, int i) {
         if (node == null) {
             node = new Node();
         }
-        if (i == parsePattern(pattern).length()) {
+        if (i == pattern.length()) {
             node.isTerminal = true;
-            node.values.add(pattern);
+            node.values.add(content);
             return node;
         }
-        node.children[key(pattern, i)] = insert(node.children[key(pattern, i)], pattern, i + 1);
+        node.children[key(pattern, i)] = insert(node.children[key(pattern, i)], pattern, content, i + 1);
         return node;
     }
 }
