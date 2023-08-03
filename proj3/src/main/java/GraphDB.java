@@ -253,7 +253,7 @@ public class GraphDB {
         return locationNames.findPrefix(prefix);
     }
 
-    Map<String, Object> getLocationById(Long id) {
+    private Map<String, Object> getLocationById(Long id) {
         Map<String, Object> res = new HashMap<>();
         GraphDB.Node location = nodes.get(id);
         res.put("id", location.id);
@@ -263,10 +263,10 @@ public class GraphDB {
         return res;
     }
 
-    public List<Map<String, Object>> getLocations(String locationName) {
+    List<Map<String, Object>> getLocations(String locationName) {
         List<Map<String, Object>> res = new LinkedList<>();
-        for (String name: getLocationsByPrefix(locationName)) {
-            for (Long id: locations.get(name)) {
+        for (String name: locationNames.find(locationName)) {
+            for (long id: locations.get(name)) {
                 res.add(getLocationById(id));
             }
         }

@@ -1,5 +1,3 @@
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -7,9 +5,9 @@ public class Trie {
     class Node {
         Node[] children = new Node[27];
         boolean isTerminal;
-        Set<String> values;
+        List<String> values;
         Node() {
-            values = new HashSet<>();
+            values = new LinkedList<>();
         }
     }
     private Node root = new Node();
@@ -21,30 +19,41 @@ public class Trie {
         return pattern.charAt(i) - 'a';
     }
 
+    private Node getNode(String pattern) {
+        Node node = root;
+        for (int i = 0; i < pattern.length(); i++) {
+            Node child = node.children[key(pattern, i)];
+            if (child == null) {
+                return null;
+            }
+            node = child;
+        }
+        return node;
+    }
+    List<String> find(String pattern) {
+        pattern = GraphDB.cleanString(pattern);
+        Node node = getNode(pattern);
+        if (node != null && node.isTerminal) {
+            return node.values;
+        }
+        return null;
+    }
     List<String> findPrefix(String prefix) {
         if (prefix == null) {
             return new LinkedList<>();
         }
         prefix = GraphDB.cleanString(prefix);
-        Node node = root;
         if (prefix.isEmpty()) {
             List<String> res = new LinkedList<>();
-            if (node.isTerminal) {
-                res.addAll(node.values);
+            if (root.isTerminal) {
+                res.addAll(root.values);
             }
             return res;
         }
-        for (int i = 0; i < prefix.length(); i++) {
-            Node child = node.children[key(prefix, i)];
-            if (child == null) {
-                return new LinkedList<>();
-            }
-            node = child;
-        }
-        return findAll(node);
+        return findAll(getNode(prefix));
     }
 
-    List<String> findAll(Node node) {
+    private List<String> findAll(Node node) {
         List<String> res = new LinkedList<>();
         if (node == null) {
             return res;
@@ -72,7 +81,8 @@ public class Trie {
             node.values.add(content);
             return node;
         }
-        node.children[key(pattern, i)] = insert(node.children[key(pattern, i)], pattern, content, i + 1);
+        node.children[key(pattern, i)] = insert(
+                node.children[key(pattern, i)], pattern, content, i + 1);
         return node;
     }
 }
