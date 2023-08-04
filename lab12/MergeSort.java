@@ -80,12 +80,14 @@ public class MergeSort {
         if (items.isEmpty()) {
             return items;
         }
-        Queue<Item> res = null;
         Queue<Queue<Item>> parts = makeSingleItemQueues(items);
-        while (!parts.isEmpty()) {
-            res = mergeSortedQueues(res, parts.dequeue());
+        while (parts.size() != 1) {
+            int size = parts.size();
+            for (int i = 0; i < size; i += 2) {
+                parts.enqueue(mergeSortedQueues(parts.dequeue(), parts.dequeue()));
+            }
         }
-        return res;
+        return parts.dequeue();
     }
 
     public static void main(String[] args) {
