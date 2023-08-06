@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.Random;
+
 /**
  * Class for doing Radix sort
  *
@@ -25,20 +28,24 @@ public class RadixSort {
         for (String s: asciis) {
             maxLength = s.length() < maxLength ? maxLength : s.length();
         }
+        // should not padding on the original string, because of ambiguity
+//        for (int i = 0; i < asciis.length; i++) {
+//            int pad = maxLength - asciis[i].length();
+//            StringBuilder sb = new StringBuilder(asciis[i]);
+//            for (int j = 0; j < pad; j++) {
+//                sb.append('\0');
+//            }
+//            sorted[i] = sb.toString();
+//        }
         for (int i = 0; i < asciis.length; i++) {
-            int pad = maxLength - asciis[i].length();
-            StringBuilder sb = new StringBuilder(asciis[i]);
-            for (int j = 0; j < pad; j++) {
-                sb.append('\0');
-            }
-            sorted[i] = sb.toString();
+            sorted[i] = asciis[i];
         }
         for (int i = maxLength - 1; i >= 0; i--) {
             sortHelperLSD(sorted, i);
         }
-        for (int i = 0; i < sorted.length; i++) {
-            sorted[i] = sorted[i].trim();
-        }
+//        for (int i = 0; i < sorted.length; i++) {
+//            sorted[i] = sorted[i].trim();
+//        }
         return sorted;
     }
 
@@ -49,12 +56,12 @@ public class RadixSort {
      * @param index The position to sort the Strings on.
      */
     private static void sortHelperLSD(String[] asciis, int index) {
-        int[] counts = new int[256];
-        int[] starts = new int[256];
+        int[] counts = new int[257];
+        int[] starts = new int[257];
         int pos = 0;
 
         for (String s: asciis) {
-            counts[s.charAt(index)]++;
+            counts[charAt(s, index)]++;
         }
         for (int i = 0; i < counts.length; i++) {
             starts[i] = pos;
@@ -63,12 +70,21 @@ public class RadixSort {
 
         String[] sorted = new String[asciis.length];
         for (int i = 0; i < asciis.length; i++) {
-            int c = asciis[i].charAt(index);
+            int c = charAt(asciis[i], index);
             sorted[starts[c]] = asciis[i];
             starts[c]++;
         }
         for (int i = 0; i < asciis.length; i++) {
             asciis[i] = sorted[i];
+        }
+    }
+
+    private static int charAt(String s, int index) {
+        // padding with zero
+        if (index >= s.length()) {
+            return 0;
+        } else {
+            return (int) s.charAt(index) + 1;
         }
     }
 
@@ -88,9 +104,37 @@ public class RadixSort {
     }
 
     public static void main(String[] args) {
-        String[] t = {"abc", "ba"};
-        for (String x: sort(t)) {
-            System.out.println(x);
+        Random r = new Random();
+        while (true) {
+            String[] t = randomStrings(r, r.nextInt(20));
+            String[] t1 = sort(t);
+            Arrays.sort(t);
+            if (!Arrays.equals(t, t1)) {
+                System.out.println("Expected:");
+                System.out.println(Arrays.toString(t));
+                System.out.println("Actual:");
+                System.out.println(Arrays.toString(t1));
+                break;
+            }
         }
+    }
+
+    private static String[] randomStrings(Random r, int length) {
+        String[] res = new String[length];
+        for (int i = 0; i < length; i++) {
+            res[i] = randomString(r, r.nextInt(50));
+        }
+        return res;
+    }
+
+    private static String randomString(Random r, int length) {
+        if (length == 0) {
+            return randomString(r, r.nextInt(50));
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) r.nextInt(256));
+        }
+        return sb.toString();
     }
 }
