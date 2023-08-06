@@ -16,17 +16,14 @@ public class CountingSort {
     public static int[] naiveCountingSort(int[] arr) {
         // find max
         int max = Integer.MIN_VALUE;
-        int min = Integer.MAX_VALUE;
         for (int i : arr) {
             max = max > i ? max : i;
-            min = min < i ? min : i;
         }
 
         // gather all the counts for each value
-        int[] counts = new int[max - min + 1];
+        int[] counts = new int[max + 1];
         for (int i : arr) {
-            int pos = i - min;
-            counts[pos]++;
+            counts[i]++;
         }
 
         // when we're dealing with ints, we can just put each value
@@ -41,20 +38,20 @@ public class CountingSort {
 
         // however, below is a more proper, generalized implementation of
         // counting sort that uses start position calculation
-//        int[] starts = new int[max + 1];
-//        int pos = 0;
-//        for (int i = 0; i < starts.length; i += 1) {
-//            starts[i] = pos;
-//            pos += counts[i];
-//        }
-//
-//        int[] sorted2 = new int[arr.length];
-//        for (int i = 0; i < arr.length; i += 1) {
-//            int item = arr[i];
-//            int place = starts[item];
-//            sorted2[place] = item;
-//            starts[item] += 1;
-//        }
+        int[] starts = new int[max + 1];
+        int pos = 0;
+        for (int i = 0; i < starts.length; i += 1) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+
+        int[] sorted2 = new int[arr.length];
+        for (int i = 0; i < arr.length; i += 1) {
+            int item = arr[i];
+            int place = starts[item];
+            sorted2[place] = item;
+            starts[item] += 1;
+        }
 
         // return the sorted array
         return sorted;
