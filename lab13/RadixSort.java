@@ -29,7 +29,7 @@ public class RadixSort {
             int pad = maxLength - asciis[i].length();
             StringBuilder sb = new StringBuilder(asciis[i]);
             for (int j = 0; j < pad; j++) {
-                sb.append(' ');
+                sb.append('\0');
             }
             sorted[i] = sb.toString();
         }
@@ -88,9 +88,9 @@ public class RadixSort {
     }
 
     public static void main(String[] args) {
-        String[] t = {"abc", "a"};
+        String[] t = {"abc", "ba"};
         for (String x: sort(t)) {
-            System.out.println(x.length());
+            System.out.println(x);
         }
     }
 }
