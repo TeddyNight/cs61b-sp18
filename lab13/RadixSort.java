@@ -14,10 +14,29 @@ public class RadixSort {
      * @param asciis String[] that needs to be sorted
      *
      * @return String[] the sorted array
+     *
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+        String[] sorted = new String[asciis.length];
+        int maxLength = asciis[0].length();
+        for (String s: asciis) {
+            maxLength = s.length() < maxLength ? maxLength : s.length();
+        }
+        for (int i = 0; i < asciis.length; i++) {
+            int pad = maxLength - asciis[i].length();
+            StringBuilder sb = new StringBuilder(asciis[i]);
+            for (int j = 0; j < pad; j++) {
+                sb.append(' ');
+            }
+            sorted[i] = sb.toString();
+        }
+        for (int i = maxLength - 1; i >= 0; i--) {
+            sortHelperLSD(sorted, i);
+        }
+        for (int i = 0; i < sorted.length; i++) {
+            sorted[i] = sorted[i].trim();
+        }
+        return sorted;
     }
 
     /**
@@ -27,8 +46,27 @@ public class RadixSort {
      * @param index The position to sort the Strings on.
      */
     private static void sortHelperLSD(String[] asciis, int index) {
-        // Optional LSD helper method for required LSD radix sort
-        return;
+        int[] counts = new int[128];
+        int[] starts = new int[128];
+        int pos = 0;
+
+        for (String s: asciis) {
+            counts[s.charAt(index)]++;
+        }
+        for (int i = 0; i < counts.length; i++) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+
+        String[] sorted = new String[asciis.length];
+        for (int i = 0; i < asciis.length; i++) {
+            int c = asciis[i].charAt(index);
+            sorted[starts[c]] = asciis[i];
+            starts[c]++;
+        }
+        for (int i = 0; i < asciis.length; i++) {
+            asciis[i] = sorted[i];
+        }
     }
 
     /**
@@ -44,5 +82,12 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         return;
+    }
+
+    public static void main(String[] args) {
+        String[] t = {"abc", "a"};
+        for (String x: sort(t)) {
+            System.out.println(x.length());
+        }
     }
 }
