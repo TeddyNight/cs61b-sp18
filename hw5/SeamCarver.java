@@ -154,7 +154,7 @@ public class SeamCarver {
         if (seam == null || seam.length != width() || isValidSeam(seam)) {
             throw new IllegalArgumentException();
         }
-
+        picture = SeamRemover.removeHorizontalSeam(picture, seam);
     }
 
     /**
@@ -165,5 +165,6 @@ public class SeamCarver {
         if (seam == null || seam.length != height() || isValidSeam(seam)) {
             throw new IllegalArgumentException();
         }
+        picture = SeamRemover.removeVerticalSeam(picture, seam);
     }
 }
