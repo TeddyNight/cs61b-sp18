@@ -36,26 +36,43 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-
+        Plip p = new Plip(2);
+        Plip r = p.replicate();
+        assertNotSame("replicate should not be the same", p, r);
+        assertEquals(1.0d, p.energy(), 0.01);
+        assertEquals(1.0d, r.energy(), 0.01);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
-        Plip p = new Plip(1.2);
-        HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
+        Plip p;
+
+        p = new Plip(1.2);
+        HashMap<Direction, Occupant> surrounded;
+        surrounded = new HashMap<>();
         surrounded.put(Direction.TOP, new Impassible());
         surrounded.put(Direction.BOTTOM, new Impassible());
         surrounded.put(Direction.LEFT, new Impassible());
         surrounded.put(Direction.RIGHT, new Impassible());
-
         //You can create new empties with new Empty();
         //Despite what the spec says, you cannot test for Cloruses nearby yet.
-        //Sorry!  
+        //Sorry!
+        assertEquals(new Action(Action.ActionType.STAY), p.chooseAction(surrounded));
 
-        Action actual = p.chooseAction(surrounded);
-        Action expected = new Action(Action.ActionType.STAY);
+        surrounded = new HashMap<>();
+        surrounded.put(Direction.TOP, new Empty());
+        surrounded.put(Direction.BOTTOM, new Impassible());
+        surrounded.put(Direction.LEFT, new Impassible());
+        surrounded.put(Direction.RIGHT, new Impassible());
+        assertEquals(new Action(Action.ActionType.REPLICATE, Direction.TOP), p.chooseAction(surrounded));
 
-        assertEquals(expected, actual);
+        p = new Plip(0.6);
+        surrounded = new HashMap<>();
+        surrounded.put(Direction.TOP, new Empty());
+        surrounded.put(Direction.BOTTOM, new Impassible());
+        surrounded.put(Direction.LEFT, new Impassible());
+        surrounded.put(Direction.RIGHT, new Impassible());
+        assertEquals(new Action(Action.ActionType.STAY), p.chooseAction(surrounded));
     }
 
     public static void main(String[] args) {

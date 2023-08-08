@@ -19,13 +19,14 @@ public class Plip extends Creature {
     private int g;
     /** blue color. */
     private int b;
+    private double moveProbability = 0.5;
 
     /** creates plip with energy equal to E. */
     public Plip(double e) {
         super("plip");
-        r = 0;
-        g = 0;
-        b = 0;
+        r = 99;
+        g = 63;
+        b = 76;
         energy = e;
     }
 
@@ -42,8 +43,7 @@ public class Plip extends Creature {
      *  that you get this exactly correct.
      */
     public Color color() {
-        g = 63;
-        return color(r, g, b);
+        return color(r, g + (int) Math.round(4.8 * energy / 0.05), b);
     }
 
     /** Do nothing with C, Plips are pacifists. */
@@ -55,11 +55,16 @@ public class Plip extends Creature {
      *  private static final variable. This is not required for this lab.
      */
     public void move() {
+        energy -= 0.15;
     }
 
 
     /** Plips gain 0.2 energy when staying due to photosynthesis. */
     public void stay() {
+        energy += 0.2;
+        if (energy > 2) {
+            energy = 2.0;
+        }
     }
 
     /** Plips and their offspring each get 50% of the energy, with none
@@ -67,7 +72,8 @@ public class Plip extends Creature {
      *  Plip.
      */
     public Plip replicate() {
-        return this;
+        energy = 0.5 * energy;
+        return new Plip(energy);
     }
 
     /** Plips take exactly the following actions based on NEIGHBORS:
@@ -81,7 +87,22 @@ public class Plip extends Creature {
      *  for an example to follow.
      */
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
-        return new Action(Action.ActionType.STAY);
+        List<Direction> empties = getNeighborsOfType(neighbors, "empty");
+        if (empties.isEmpty()) {
+            return new Action(Action.ActionType.STAY);
+        } else if (energy > 1) {
+            Direction moveDir = HugLifeUtils.randomEntry(empties);
+            return new Action(Action.ActionType.REPLICATE, moveDir);
+        } else if (!getNeighborsOfType(neighbors, "clorus").isEmpty()) {
+            if (HugLifeUtils.random() < moveProbability) {
+                return new Action(Action.ActionType.STAY);
+            } else {
+                Direction moveDir = HugLifeUtils.randomEntry(empties);
+                return new Action(Action.ActionType.MOVE, moveDir);
+            }
+        } else {
+            return new Action(Action.ActionType.STAY);
+        }
     }
 
 }
