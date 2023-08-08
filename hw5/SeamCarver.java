@@ -12,7 +12,7 @@ public class SeamCarver {
      * @return current picture
      */
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     /**
