@@ -26,7 +26,7 @@ public class SeamCarver {
      * @return height of current picture
      */
     public int height() {
-        return picture().height();
+        return picture.height();
     }
 
     private boolean isValidPixel(int x, int y) {
@@ -77,14 +77,14 @@ public class SeamCarver {
 
     private int minimumPath(double[][] M, int x, int y) {
         int minX = x;
-        double min = M[x][y - 1];
-        if (x - 1 >= 0 && M[x - 1][y - 1] < min) {
+        double min = M[y - 1][x];
+        if (x - 1 >= 0 && M[y - 1][x - 1] < min) {
             minX = x - 1;
-            min = M[x - 1][y - 1];
+            min = M[y - 1][x - 1];
         }
-        if (x + 1 < width() && M[x + 1][y - 1] < min) {
+        if (x + 1 < width() && M[y - 1][x + 1] < min) {
             minX = x + 1;
-            min = M[x + 1][y - 1];
+            min = M[y - 1][x + 1];
         }
         return minX;
     }
@@ -95,26 +95,26 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         int width = width();
         int height = height();
-        double[][] M = new double[width][height];
-        int[][] edgeTo = new int[width][height];
-        for (int i = 0; i < width; i++) {
-            M[i][0] = energy(i, 0);
+        double[][] M = new double[height][width];
+        int[][] edgeTo = new int[height][width];
+        for (int j = 0; j < width; j++) {
+            M[0][j] = energy(j, 0);
         }
         for (int j = 1; j < height; j++) {
             for (int i = 0; i < width; i++) {
                 int path = minimumPath(M, i, j);
-                edgeTo[i][j] = path;
-                M[i][j] = energy(i, j) + M[path][j - 1];
+                edgeTo[j][i] = path;
+                M[j][i] = energy(i, j) + M[j - 1][path];
             }
         }
         int[] seam = new int[height];
         for (int i = 0; i < width; i++) {
-            if (M[i][height - 1] <= M[seam[height - 1]][height - 1]) {
+            if (M[height - 1][i] <= M[height - 1][seam[height - 1]]) {
                 seam[height - 1] = i;
             }
         }
         for (int i = height - 2; i >= 0; i--) {
-            seam[i] = edgeTo[seam[i + 1]][i + 1];
+            seam[i] = edgeTo[i + 1][seam[i + 1]];
         }
         return seam;
     }
