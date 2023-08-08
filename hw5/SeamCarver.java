@@ -123,7 +123,18 @@ public class SeamCarver {
      * @return sequence of indices for horizontal seam
      */
     public int[] findHorizontalSeam() {
-        return null;
+        int height = height();
+        int width = width();
+        Picture old = picture;
+        picture = new Picture(height, width);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                picture.set(j, i, old.get(i, j));
+            }
+        }
+        int[] seam = findVerticalSeam();
+        picture = old;
+        return seam;
     }
 
     private boolean isValidSeam(int[] seam) {
