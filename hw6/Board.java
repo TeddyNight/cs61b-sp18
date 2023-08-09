@@ -39,4 +39,14 @@ class Board {
     private int key(char c) {
         return c - 'a';
     }
+
+    boolean existsWords(String str) {
+        char[] words = str.replaceAll("[' ]", "").toLowerCase().toCharArray();
+        for (int i = 1; i < words.length; i++) {
+            if (!adjacent[words[i - 1]][words[i]]) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
