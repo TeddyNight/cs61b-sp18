@@ -37,13 +37,24 @@ class Board {
     }
 
     private int key(char c) {
+        if (c == 'é' || c == 'ê') {
+            c = 'e';
+        }
         return c - 'a';
     }
 
-    boolean existsWords(String str) {
-        char[] words = str.replaceAll("[' ]", "").toLowerCase().toCharArray();
+    boolean existsLetters(String str) {
+        char[] words = str.toLowerCase().toCharArray();
+        // at least three letters long
+        if (words.length < 3) {
+            return false;
+        }
         for (int i = 1; i < words.length; i++) {
-            if (!adjacent[words[i - 1]][words[i]]) {
+            // do not account for "qu" tile
+            if (words[i] == '\'') {
+                return false;
+            }
+            if (!adjacent[key(words[i - 1])][key(words[i])]) {
                 return false;
             }
         }
