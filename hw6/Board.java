@@ -1,6 +1,12 @@
+import java.util.List;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 class Board {
     char[][] board;
     boolean[][] adjacent = new boolean[26][26];
+    Map<Character, List<Position>> words = new HashMap<>();
     int N;
     int M;
     Board(String path) {
@@ -16,6 +22,13 @@ class Board {
             }
             board[i] = line;
             for (int j = 0; j < M; j++) {
+                char c = board[i][j];
+                List<Position> poses = words.get(c);
+                if (poses == null) {
+                    poses = new LinkedList<>();
+                    words.put(c, poses);
+                }
+                poses.add(new Position(i, j));
                 if (i > 0) {
                     adjacent[key(board[i - 1][j])][key(board[i][j])] = true;
                     adjacent[key(board[i][j])][key(board[i - 1][j])] = true;
@@ -28,7 +41,7 @@ class Board {
                     adjacent[key(board[i - 1][j - 1])][key(board[i][j])] = true;
                     adjacent[key(board[i][j])][key(board[i - 1][j - 1])] = true;
                 }
-                if (i >0 && j < M - 1) {
+                if (i > 0 && j < M - 1) {
                     adjacent[key(board[i - 1][j + 1])][key(board[i][j])] = true;
                     adjacent[key(board[i][j])][key(board[i - 1][j + 1])] = true;
                 }
@@ -44,20 +57,48 @@ class Board {
     }
 
     boolean existsLetters(String str) {
-        char[] words = str.toLowerCase().toCharArray();
+        char[] letters = str.toLowerCase().toCharArray();
         // at least three letters long
-        if (words.length < 3) {
+        if (letters.length < 3) {
             return false;
         }
-        for (int i = 1; i < words.length; i++) {
+        for (int i = 1; i < letters.length; i++) {
             // do not account for "qu" tile
-            if (words[i] == '\'') {
+            if (letters[i] == '\'') {
                 return false;
             }
-            if (!adjacent[key(words[i - 1])][key(words[i])]) {
+            if (!adjacent[key(letters[i - 1])][key(letters[i])]) {
                 return false;
             }
         }
         return true;
+    }
+
+    List<Position> getNeighbor(Position p) {
+        List<Position> neighbors = new LinkedList<>();
+        int x = p.x;
+        int y = p.y;
+        Position[] poses = {new Position(x - 1, y), new Position(x + 1, y),
+            new Position(x, y - 1), new Position(x, y + 1),
+            new Position(x - 1, y - 1), new Position(x + 1, y + 1),
+            new Position(x + 1, y - 1), new Position(x - 1, y + 1)};
+        for (Position pos: poses) {
+            if (validPos(pos)) {
+                neighbors.add(pos);
+            }
+        }
+        return neighbors;
+    }
+
+    char getChar(Position p) {
+        return board[p.x][p.y];
+    }
+
+    List<Position> getPos(char c) {
+        return words.get(c);
+    }
+
+    boolean validPos(Position p) {
+        return p.x >= 0 && p.x < N && p.y >= 0 && p.y < M;
     }
 }
