@@ -2,14 +2,13 @@ import edu.princeton.cs.algs4.Stack;
 
 import java.util.List;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.HashMap;
 
 public class Trie {
     static class Node {
         Node[] children = new Node[26];
         boolean isTerminal;
         List<String> values;
+        List<Position> poses;
         Node() {
             values = new LinkedList<>();
         }
@@ -57,6 +56,7 @@ public class Trie {
         for (int i = 0; i < 26; i++) {
             Node child = root.children[i];
             if (child != null) {
+                child.poses = board.getPos((char) (i + 'a'));
                 level.add(child);
             }
         }
@@ -68,7 +68,11 @@ public class Trie {
                 for (int i = 0; i < 26; i++) {
                     Node child = node.children[i];
                     if (child != null) {
-                        level.add(child);
+                        child.poses = board.getNeighbors(node.poses, (char) (i + 'a'));
+//                        level.add(child);
+                        if (!child.poses.isEmpty()) {
+                            level.add(child);
+                        }
                     }
                 }
             }

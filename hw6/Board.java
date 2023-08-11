@@ -99,6 +99,18 @@ class Board {
         return neighbors;
     }
 
+    List<Position> getNeighbors(List<Position> list, char c) {
+        List<Position> neighbors = new LinkedList<>();
+        for (Position p: list) {
+            for (Position q: getNeighbor(p)) {
+                if (board[q.x][q.y] == c) {
+                    neighbors.add(q);
+                }
+            }
+        }
+        return neighbors;
+    }
+
     char getChar(Position p) {
         return board[p.x][p.y];
     }
