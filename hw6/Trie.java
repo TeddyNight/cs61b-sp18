@@ -10,7 +10,6 @@ public class Trie {
         Node[] children = new Node[26];
         boolean isTerminal;
         List<String> values;
-        List<Path> paths;
         Node() {
             values = new LinkedList<>();
         }
@@ -58,11 +57,7 @@ public class Trie {
         for (int i = 0; i < 26; i++) {
             Node child = root.children[i];
             if (child != null) {
-                child.paths = new LinkedList<>();
                 level.add(child);
-                for (Position p: board.getPos((char) (i + 'a'))) {
-                    child.paths.add(new Path(p));
-                }
             }
         }
         while (!level.isEmpty()) {
@@ -70,28 +65,10 @@ public class Trie {
             level = new LinkedList<>();
             List<Node> lastLevel = levels.peek();
             for (Node node: lastLevel) {
-                Map<Character, List<Path>> childPaths = new HashMap<>();
-                for (Path p: node.paths) {
-                    for (Position neighbor: board.getNeighbor(p.getLastPos())) {
-                        if (p.hasVisited(neighbor)) {
-                            continue;
-                        }
-                        char c = board.getChar(neighbor);
-                        List<Path> paths = childPaths.get(c);
-                        if (paths == null) {
-                            paths = new LinkedList<>();
-                            childPaths.put(c, paths);
-                        }
-                        paths.add(new Path(p).appendPos(neighbor));
-                    }
-                }
                 for (int i = 0; i < 26; i++) {
                     Node child = node.children[i];
                     if (child != null) {
-                        child.paths = childPaths.get((char) (i + 'a'));
-                        if (child.paths != null) {
-                            level.add(child);
-                        }
+                        level.add(child);
                     }
                 }
             }
