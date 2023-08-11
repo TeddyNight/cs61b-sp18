@@ -6,6 +6,7 @@ import java.util.Map;
 class Board {
     char[][] board;
     boolean[][] adjacent = new boolean[26][26];
+    int[] total = new int[26];
     Map<Character, List<Position>> words = new HashMap<>();
     int N;
     int M;
@@ -23,6 +24,7 @@ class Board {
             board[i] = line;
             for (int j = 0; j < M; j++) {
                 char c = board[i][j];
+                total[key(c)]++;
                 List<Position> poses = words.get(c);
                 if (poses == null) {
                     poses = new LinkedList<>();
@@ -62,12 +64,19 @@ class Board {
         if (letters.length < 3) {
             return false;
         }
+        int[] cnt = new int[26];
+        cnt[key(letters[0])]++;
         for (int i = 1; i < letters.length; i++) {
             // do not account for "qu" tile
             if (letters[i] == '\'') {
                 return false;
             }
-            if (!adjacent[key(letters[i - 1])][key(letters[i])]) {
+            int key = key(letters[i]);
+            cnt[key]++;
+            if (cnt[key] > total[key]) {
+                return false;
+            }
+            if (!adjacent[key(letters[i - 1])][key]) {
                 return false;
             }
         }
