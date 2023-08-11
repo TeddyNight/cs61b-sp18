@@ -32,7 +32,7 @@ public class Trie {
 
     private int key(String keys, int index) {
         char c = keys.charAt(index);
-        if (c == 'é' || c == 'ê') {
+        if (c == 'é' || c == 'ê' || c == 'è' || c == 'ë') {
             c = 'e';
         }
         return c - 'a';
@@ -107,7 +107,7 @@ public class Trie {
                 if (node.isTerminal) {
                     for (String value: node.values) {
                         res.add(value);
-                        if (res.size() > k) {
+                        if (res.size() >= k) {
                             return res;
                         }
                     }

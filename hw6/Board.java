@@ -50,7 +50,7 @@ class Board {
     }
 
     private int key(char c) {
-        if (c == 'é' || c == 'ê') {
+        if (c == 'é' || c == 'ê' || c == 'è' || c == 'ë') {
             c = 'e';
         }
         return c - 'a';
