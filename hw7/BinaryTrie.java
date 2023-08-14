@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BinaryTrie implements Serializable {
-    class Node implements Comparable<Node> {
+    class Node implements Comparable<Node>, Serializable {
         int weight;
         Node left;
         Node right;
@@ -32,7 +32,7 @@ public class BinaryTrie implements Serializable {
             return this.weight - o.weight;
         }
     }
-    Node root;
+    private Node root;
 
     public BinaryTrie(Map<Character, Integer> frequencyTable) {
         MinPQ<Node> nodes = new MinPQ<>();
@@ -53,7 +53,7 @@ public class BinaryTrie implements Serializable {
     public Match longestPrefixMatch(BitSequence querySequence) {
         int i = 0;
         Node node = root;
-        for (; !node.isTerminal; i++) {
+        for (; !node.isTerminal && i < querySequence.length(); i++) {
             int direct = querySequence.bitAt(i);
             switch (direct) {
                 case 0:
@@ -66,7 +66,11 @@ public class BinaryTrie implements Serializable {
                     break;
             }
         }
-        return new Match(querySequence.firstNBits(i), node.value);
+        if (node.isTerminal) {
+            return new Match(querySequence.firstNBits(i), node.value);
+        } else {
+            return new Match(new BitSequence(), '\0');
+        }
     }
 
     public Map<Character, BitSequence> buildLookupTable() {

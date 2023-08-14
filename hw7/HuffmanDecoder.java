@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.List;
-
 public class HuffmanDecoder {
     public static void main(String[] args) {
         ObjectReader reader = new ObjectReader(args[0]);
@@ -11,7 +8,7 @@ public class HuffmanDecoder {
         for (int i = 0; i < length; i++) {
             Match match = trie.longestPrefixMatch(in);
             out[i] = match.getSymbol();
-            in = in.lastNBits(in.length() - match.getSequence().length());
+            in = in.allButFirstNBits(match.getSequence().length());
         }
         FileUtils.writeCharArray(args[1], out);
     }
