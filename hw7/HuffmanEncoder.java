@@ -20,6 +20,7 @@ public class HuffmanEncoder {
         Map<Character, Integer> frequencyTable = buildFrequencyTable(in);
         BinaryTrie trie = new BinaryTrie(frequencyTable);
         writer.writeObject(trie);
+        writer.writeObject(in.length);
         Map<Character, BitSequence> lookupTable = trie.buildLookupTable();
         List<BitSequence> out = new LinkedList<>();
         for (char c: in) {
